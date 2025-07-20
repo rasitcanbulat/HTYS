@@ -1,84 +1,97 @@
-HTYS - Hukuk Takip Yönetim Sistemi
-Bu proje, bir bankanın hukuk departmanı için geliştirilmiş olan ASP.NET Core MVC tabanlı bir Hukuk Takip Yönetim Sistemi'dir. Sistem, bankacı ve avukat rollerine sahip kullanıcıların müşteri, ürün, ihtar ve icra takiplerini yönetmesini sağlar.
 
-Proje Hakkında
-HTYS, bankanın borçlu müşterilerine ait yasal süreçlerin dijital ortamda verimli bir şekilde takip edilmesi amacıyla oluşturulmuştur. Sistem, N-Tier (Çok Katmanlı) mimari prensiplerine uygun olarak geliştirilmiştir.
+# ⚖️ HTYS - Hukuk Takip Yönetim Sistemi
 
-Kullanılan Teknolojiler
-Backend: C#, ASP.NET Core MVC, Entity Framework Core
+**HTYS (Hukuk Takip Yönetim Sistemi)**, bir bankanın hukuk departmanında kullanılmak üzere geliştirilmiş, ASP.NET Core MVC tabanlı bir web uygulamasıdır. Sistem, **bankacı** ve **avukat** rollerine sahip kullanıcıların müşteri, ürün, ihtar ve icra takip süreçlerini etkin şekilde yönetmesine olanak sağlar.
 
-Frontend: HTML5, CSS3, JavaScript
+## 📌 Proje Hakkında
 
-Veritabanı: Microsoft SQL Server
+HTYS, bankaların borçlu müşterilerine ait **hukuki takip süreçlerini dijital ortamda merkezi ve güvenli şekilde yönetmek** amacıyla geliştirilmiştir.
 
-Mimari: N-Tier (Katmanlı Mimari)
+> 🏢 Bu proje, **Halkbank – Temel Bankacılık Uygulama Geliştirme Daire Başkanlığı**'nda **stajyerlik sürecim** boyunca geliştirdiğim **ilk profesyonel yazılım projesidir**.
 
-Özellikler
-Çift Rol Sistemi:
+Uygulama, modern web teknolojileriyle oluşturulmuş olup, **N-Tier (Katmanlı Mimari)** prensiplerine uygun olarak yapılandırılmıştır.
 
-Bankacı Paneli: Müşteri, avukat, ürün, ihtar ve icra takibi için tam CRUD (Oluşturma, Okuma, Güncelleme, Silme) işlemleri.
+## 🛠️ Kullanılan Teknolojiler
 
-Avukat Paneli: Kendisine atanmış olan müşteri, ihtar ve icra dosyalarını görüntüleme.
+| Katman       | Teknoloji                          |
+|--------------|------------------------------------|
+| Backend      | C#, ASP.NET Core MVC, EF Core      |
+| Frontend     | HTML5, CSS3, JavaScript            |
+| Veritabanı   | Microsoft SQL Server               |
+| Mimari       | N-Tier Architecture                |
 
-Kullanıcı Yönetimi: Güvenli kullanıcı girişi ve bankacılar için kayıt olma özelliği.
+## 🚀 Özellikler
 
-Dinamik Formlar: Birbiriyle ilişkili verilerin (İl -> İlçe, Müşteri -> Ürün) dinamik olarak yüklendiği kullanıcı dostu formlar.
+### 👥 Rol Tabanlı Yetkilendirme
+- **Bankacı Paneli**: Müşteri, avukat, ürün, ihtar ve icra takibi için **tam CRUD** işlemleri.
+- **Avukat Paneli**: Sadece **kendi atandığı dosya ve müşterileri** görüntüleyebilir.
 
-Anlık Doğrulama: Kullanıcıların formları doldururken yaptığı hataları anında gösteren JavaScript tabanlı istemci tarafı doğrulama.
+### 🔐 Kullanıcı Yönetimi
+- Bankacılar için **kayıt olma**, güvenli **giriş işlemleri** ve roller arası geçiş yönetimi.
 
-Veritabanı Yönetimi: Code-First yaklaşımı ve Entity Framework Core Migrations ile veritabanı yönetimi.
+### 🧠 Dinamik Formlar & Doğrulama
+- **İl → İlçe**, **Müşteri → Ürün** gibi ilişkili verilerin dinamik yüklenmesi.
+- **Gerçek zamanlı form doğrulama** ile kullanıcı dostu veri giriş deneyimi.
 
-Güvenlik: Şifrelerin veritabanında güvenli bir şekilde hash'lenerek saklanması.
+### 📦 Veritabanı Yönetimi
+- **Code-First** yaklaşımı ile geliştirilen veritabanı.
+- **EF Core Migrations** ile sürüm kontrollü yapılar.
 
-Kurulum
-Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin:
+### 🔒 Güvenlik
+- Kullanıcı şifreleri **hash’lenerek** saklanır.
+- Yetkisiz erişimlere karşı **role-based authorization** mekanizması uygulanır.
 
-Depoyu Klonlayın:
+## ⚙️ Kurulum Adımları
 
+### 1. Depoyu Klonlayın
+```bash
 git clone https://github.com/kullanici-adiniz/proje-adiniz.git
+```
 
-Veritabanı Bağlantısı:
+### 2. Veritabanı Bağlantısı
+`HTYS.WebUI/appsettings.json` dosyasındaki `DefaultConnection` kısmını kendi SQL Server bilgilerinizle güncelleyin:
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=.;Database=HTYS;Trusted_Connection=True;"
+}
+```
 
-HTYS.WebUI projesi içindeki appsettings.json dosyasını açın.
+### 3. Veritabanı Migrasyonu
+Visual Studio'da `Package Manager Console` açın:
 
-ConnectionStrings bölümündeki "DefaultConnection" değerini kendi SQL Server bağlantı bilgilerinizle güncelleyin.
-
-Veritabanı Migrasyonları:
-
-Visual Studio'da Package Manager Console'u açın.
-
-Default project olarak HTYS.DataAccessLayer projesini seçin.
-
-Aşağıdaki komutu çalıştırarak veritabanını oluşturun ve tabloları yükleyin:
-
+- Default Project: `HTYS.DataAccessLayer` olarak seçin.
+- Komutu çalıştırın:
+```bash
 Update-Database
+```
 
-Projeyi Çalıştırın:
+### 4. Projeyi Başlatın
+`HTYS.WebUI` projesini **Startup Project** olarak ayarlayın ve uygulamayı çalıştırın.
 
-HTYS.WebUI projesini başlangıç projesi olarak ayarlayın ve çalıştırın.
+## 🧱 Veritabanı Varlıkları (Entities)
 
-Veritabanı Yapısı
-Proje, Entity Framework Core Code-First yaklaşımı ile aşağıdaki ana varlıkları (entities) yönetir:
+- `Musteri`
+- `Avukat`
+- `Urun`
+- `Ihtar`
+- `IcraTakip`
+- `LoginAccount`
 
-Musteri
+## 🏗️ Proje Mimarisi
 
-Avukat
+**Katmanlı mimari** yapısıyla modüler, okunabilir ve sürdürülebilir bir geliştirme ortamı sunar:
 
-Urun
+```
+HTYS.WebUI         → Kullanıcı Arayüzü (ASP.NET Core MVC)
+HTYS.BusinessLayer → İş Mantığı ve Validasyon
+HTYS.DataAccess    → Veritabanı Erişim Katmanı (EF Core)
+HTYS.Entities      → POCO Sınıflar (Entity Tanımları)
+```
 
-Ihtar
+## 📬 Katkı Sağlamak
 
-IcraTakip
+Projeye katkıda bulunmak isterseniz, lütfen bir `fork` oluşturun, değişikliklerinizi ayrı bir dalda yapın ve ardından `pull request` gönderin. Her türlü geri bildiriminiz memnuniyetle karşılanır!
 
-LoginAccount
+## 📄 Lisans
 
-Proje Mimarisi
-Proje, sorumlulukların ayrılması prensibine dayalı olarak 4 ana katmandan oluşmaktadır:
-
-HTYS.Entities: Projenin veritabanı tablolarına karşılık gelen POCO (Plain Old CLR Object) sınıflarını içerir.
-
-HTYS.DataAccessLayer: Entity Framework Core kullanarak veritabanı işlemlerini (CRUD) gerçekleştiren katmandır.
-
-HTYS.BusinessLayer: İş mantığı, veri doğrulama ve DataAccessLayer ile UI arasındaki koordinasyonu sağlayan katmandır.
-
-HTYS.WebUI: Kullanıcı arayüzünü (Views), Controller'ları ve diğer web varlıklarını içeren ASP.NET Core MVC projesidir.
+Bu proje [MIT Lisansı](LICENSE) ile lisanslanmıştır.
