@@ -45,7 +45,7 @@ Uygulama, modern web teknolojileriyle oluşturulmuş olup, **N-Tier (Katmanlı M
 
 ### 1. Depoyu Klonlayın
 ```bash
-git clone https://github.com/kullanici-adiniz/proje-adiniz.git
+git clone https://github.com/rasitcanbulat/HTYS.git
 ```
 
 ### 2. Veritabanı Bağlantısı
