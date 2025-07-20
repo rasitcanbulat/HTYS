@@ -1,0 +1,184 @@
+﻿@using HTYS.Entities
+@model List<Ihtar>
+
+@{
+    ViewData["Title"] = "İhtarlarım";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --halkbank-blue: #005baa;
+            --halkbank-green: #28a745;
+            --halkbank-yellow: #ffc107;
+            --halkbank-red: #dc3545;
+            --halkbank-gray: #f0f2f5;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--halkbank-gray);
+        }
+
+        .top-bar {
+            background-color: var(--halkbank-blue);
+            color: white;
+            padding: 10px 25px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-bar-left, .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .top-bar-left {
+            justify-self: start;
+        }
+
+        .top-bar-center {
+            justify-self: center;
+        }
+
+        .top-bar-right {
+            justify-self: end;
+        }
+
+        .page-title {
+            font-size: 1.25em;
+            font-weight: 600;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .user-info {
+            font-weight: 500;
+        }
+
+        .main-content {
+            padding: 25px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: var(--halkbank-blue);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--halkbank-gray);
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9em;
+            text-align: center;
+            margin-right: 5px;
+        }
+
+        .btn-update {
+            background-color: var(--halkbank-yellow);
+            color: black;
+        }
+
+        .btn-delete {
+            background-color: var(--halkbank-red);
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <a asp-action="Index" asp-controller="AvukatPanel" class="icon-button" title="Ana Panele Dön"><i class="fas fa-arrow-left"></i></a>
+            <h1 class="page-title">İhtar Dosyalarım</h1>
+        </div>
+        <div class="top-bar-center">
+            <img src="~/img/halkbank-logo.png" alt="Halkbank Logo" style="height: 45px;" />
+        </div>
+        <div class="top-bar-right">
+            <a asp-action="Login" asp-controller="Account" class="icon-button" title="Çıkış Yap"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </header>
+    <main class="main-content">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>İhtar No</th>
+                        <th>Borçlu</th>
+                        <th>Ürün</th>
+                        <th>İhtar Tarihi</th>
+                        <th>Nakit Tutar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        @foreach (var ihtar in Model)
+                        {
+                            <tr>
+                                <td>@ihtar.IhtarNo</td>
+                                <td>@(ihtar.Borclu?.Ad) @(ihtar.Borclu?.Soyad)</td>
+                                <td>@(ihtar.Urun?.UrunAdi)</td>
+                                <td>@ihtar.IhtarTarihi.ToShortDateString()</td>
+                                <td>@ihtar.IhtarnameNakitTutari.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding: 20px;">Size atanmış ihtar dosyası bulunamadı.</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

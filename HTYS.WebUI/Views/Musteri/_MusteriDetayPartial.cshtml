@@ -1,0 +1,115 @@
+﻿@model MusteriDetayViewModel
+
+<style>
+    .detail-container {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .detail-header {
+        background-color: #005baa;
+        color: white;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .detail-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1px;
+        background-color: #ddd;
+        border: 1px solid #ddd;
+        border-top: none;
+    }
+
+    .detail-column {
+        background-color: white;
+        padding: 20px;
+    }
+
+        .detail-column h3 {
+            font-size: 1em;
+            font-weight: 600;
+            color: #005baa;
+            border-bottom: 2px solid #eef2f5;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 0.9em;
+    }
+
+    .detail-item-label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .action-btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn-update {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .btn-delete {
+        background-color: #dc3545;
+    }
+</style>
+
+<div class="detail-container">
+    <div class="detail-header">
+        <div><i class="fas fa-user"></i> Kişi: @Model.Musteri.Ad @Model.Musteri.Soyad</div>
+        <div class="detail-actions">
+            <a asp-action="Edit" asp-controller="Musteri" asp-route-id="@Model.Musteri.Id" class="action-btn btn-update">Güncelle</a>
+            <form asp-action="Delete" method="post" onsubmit="return confirm('Bu müşteriyi silmek istediğinizden emin misiniz?');">
+                <input type="hidden" name="id" value="@Model.Musteri.Id" />
+                <button type="submit" class="action-btn btn-delete">Sil</button>
+            </form>
+        </div>
+    </div>
+    <div class="detail-grid">
+        <div class="detail-column">
+            <h3>TEMEL BİLGİLER</h3>
+            <div class="detail-item"><span class="detail-item-label">Müşteri No:</span> <span>@Model.Musteri.MusteriNo</span></div>
+            <div class="detail-item"><span class="detail-item-label">TCKN:</span> <span>@Model.Musteri.TCKN</span></div>
+            <div class="detail-item"><span class="detail-item-label">Doğum Tarihi:</span> <span>@Model.Musteri.DogumTarihi?.ToString("dd.MM.yyyy")</span></div>
+            <div class="detail-item"><span class="detail-item-label">Doğum Yeri:</span> <span>@Model.Musteri.DogumYeri</span></div>
+            <div class="detail-item"><span class="detail-item-label">Cinsiyet:</span> <span>@Model.Musteri.Cinsiyet</span></div>
+            <div class="detail-item"><span class="detail-item-label">Medeni Durum:</span> <span>@Model.Musteri.MedeniDurum</span></div>
+            <div class="detail-item"><span class="detail-item-label">Baba Adı:</span> <span>@Model.Musteri.BabaAdi</span></div>
+            <div class="detail-item"><span class="detail-item-label">Anne Adı:</span> <span>@Model.Musteri.AnneAdi</span></div>
+        </div>
+        <div class="detail-column">
+            <h3>KİMLİK & ADRES & EK BİLGİLER</h3>
+            <div class="detail-item"><span class="detail-item-label">Pasaport No:</span> <span>@Model.Musteri.PasaportNo</span></div>
+            <div class="detail-item"><span class="detail-item-label">Nüfusa Kayıtlı İl:</span> <span>@Model.Musteri.NufusaKayitliIl</span></div>
+            <div class="detail-item"><span class="detail-item-label">Cilt No:</span> <span>@Model.Musteri.CiltNo</span></div>
+            <div class="detail-item"><span class="detail-item-label">Aile Sıra No:</span> <span>@Model.Musteri.AileSiraNo</span></div>
+            <div class="detail-item"><span class="detail-item-label">Kütük Sıra No:</span> <span>@Model.Musteri.KutukSiraNo</span></div>
+            <div class="detail-item"><span class="detail-item-label">Adres:</span> <span>@Model.Musteri.AdresDetay, @Model.Musteri.Semt, @Model.Musteri.Ilce, @Model.Musteri.Sehir</span></div>
+            <div class="detail-item"><span class="detail-item-label">Vergi Dairesi:</span> <span>@Model.Musteri.VergiDairesi</span></div>
+            <div class="detail-item"><span class="detail-item-label">Vergi No:</span> <span>@Model.Musteri.VergiNo</span></div>
+            <div class="detail-item"><span class="detail-item-label">Hayatta Mı?:</span> <span>@(Model.Musteri.HayattaMi ? "Evet" : "Hayır")</span></div>
+        </div>
+    </div>
+</div>

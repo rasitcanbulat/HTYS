@@ -1,0 +1,561 @@
+﻿/* GLOBAL STYLES & VARIABLES */
+:root {
+    --halkbank-blue: #005baa;
+    --halkbank-light-blue: #e6f0fa;
+    --halkbank-green: #28a745;
+    --halkbank-yellow: #ffc107;
+    --halkbank-red: #dc3545;
+    --halkbank-gray: #f0f2f5;
+    --halkbank-text-dark: #333;
+    --halkbank-border-color: #ccc;
+}
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--halkbank-gray);
+    color: var(--halkbank-text-dark);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* --- LOGIN & REGISTER PAGE STYLES --- */
+.login-bg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    background: linear-gradient(135deg, var(--halkbank-blue) 0%, #003a70 100%);
+    min-height: 100vh;
+}
+
+.halkbank-login-card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.halkbank-logo {
+    max-width: 250px;
+    margin-bottom: 20px;
+}
+
+.halkbank-label {
+    display: block;
+    text-align: left;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--halkbank-text-dark);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--halkbank-border-color);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 1em;
+}
+
+.halkbank-btn-lg {
+    width: 100%;
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--halkbank-blue);
+    color: white;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+    .halkbank-btn-lg:hover {
+        background-color: #004a8f;
+    }
+
+#girisSecim button {
+    margin-bottom: 10px;
+}
+
+.login-form {
+    display: none; /* Başlangıçta formlar gizli */
+    width: 100%;
+    flex-direction: column;
+}
+
+    .login-form.active {
+        display: flex; /* Aktif olan form görünür */
+    }
+
+.halkbank-success-box, .halkbank-error-box {
+    border: 1px solid;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 0.9em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.halkbank-success-box {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.halkbank-error-box {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.register-link {
+    font-size: 0.9em;
+    margin-top: 20px;
+    color: #6c757d;
+    width: 100%;
+    text-align: center;
+}
+
+    .register-link a {
+        color: var(--halkbank-blue);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+
+/* --- LAYOUT STYLES --- */
+.top-bar {
+    background-color: var(--halkbank-blue);
+    color: white;
+    padding: 10px 25px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.top-bar-left, .top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.top-bar-left {
+    justify-self: start;
+}
+
+.top-bar-center {
+    justify-self: center;
+}
+
+.top-bar-right {
+    justify-self: end;
+}
+
+.page-title {
+    font-size: 1.25em;
+    font-weight: 600;
+    margin: 0;
+}
+
+.main-content {
+    padding: 25px;
+    max-width: 1400px;
+    margin: auto;
+    width: 100%;
+    flex-grow: 1;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.user-info {
+    font-weight: 500;
+}
+
+/* --- FORM PAGE STYLES (Create/Edit Ortak Stilleri) --- */
+.form-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.form-header {
+    background-color: var(--halkbank-blue);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    padding: 25px;
+}
+
+.form-column h3 {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--halkbank-blue);
+    border-bottom: 2px solid var(--halkbank-gray);
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: .5rem;
+        font-weight: 500;
+        font-size: 0.9em;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--halkbank-border-color);
+        border-radius: 5px;
+        box-sizing: border-box;
+        transition: border-color 0.2s;
+    }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--halkbank-blue);
+            outline: none;
+        }
+
+        .form-group input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+.form-actions {
+    text-align: right;
+    padding: 20px;
+    border-top: 1px solid var(--halkbank-gray);
+}
+
+.save-button {
+    color: white;
+    padding: 12px 30px;
+    border-radius: 5px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+    .save-button.create {
+        background-color: var(--halkbank-green);
+    }
+
+    .save-button.edit {
+        background-color: var(--halkbank-yellow);
+        color: black;
+    }
+
+
+.text-danger {
+    color: var(--halkbank-red);
+    font-size: 0.875em;
+    margin-top: 4px;
+    display: block;
+}
+
+.radio-button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+    .radio-button-group input[type="radio"] {
+        opacity: 0;
+        position: fixed;
+        width: 0;
+    }
+
+    .radio-button-group label {
+        display: inline-block;
+        background-color: var(--halkbank-light-blue);
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: 1px solid #b3c6e0;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .radio-button-group input[type="radio"]:checked + label {
+        background-color: var(--halkbank-blue);
+        color: white;
+        border-color: var(--halkbank-blue);
+    }
+
+.checkbox-container, .checkbox-group {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--halkbank-light-blue);
+    border-radius: 5px;
+}
+
+    .checkbox-container input, .checkbox-group input {
+        height: 1.2em;
+        width: 1.2em;
+    }
+
+    .checkbox-container label, .checkbox-group label {
+        margin-left: 10px;
+        font-weight: 600;
+        color: var(--halkbank-blue);
+    }
+
+/* --- TABLE & LIST STYLES (Index Sayfaları) --- */
+
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+    .search-box input {
+        border: none;
+        outline: none;
+        margin-left: 10px;
+        font-size: 1em;
+    }
+
+.add-button {
+    background-color: var(--halkbank-green);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.table-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: var(--halkbank-blue);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--halkbank-gray);
+    white-space: nowrap;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9em;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.btn-update {
+    background-color: var(--halkbank-yellow);
+    color: black;
+}
+
+.btn-delete {
+    background-color: var(--halkbank-red);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    gap: 10px;
+}
+
+.page-number {
+    padding: 8px 15px;
+    background-color: #ddd;
+    color: #333;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+    .page-number.active {
+        background-color: var(--halkbank-blue);
+        color: white;
+    }
+
+/* --- PANEL STYLES (BankaPanel/AvukatPanel) --- */
+
+.panel-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #004a8f;
+}
+
+.panel-bar {
+    background-color: #005baa;
+    padding: 15px 30px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    color: white;
+}
+
+.nav-center {
+    justify-self: center;
+    display: flex;
+    gap: 15px;
+}
+
+.panel-bar .center-text {
+    font-size: 1.2em;
+    font-weight: 600;
+    justify-self: center;
+}
+
+.panel-main {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    align-items: center;
+    justify-items: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+.stat-box {
+    background-color: #005baa;
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    width: 100%;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .stat-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    }
+
+    .stat-box .title {
+        font-size: 1em;
+        margin-bottom: 10px;
+        opacity: 0.9;
+    }
+
+    .stat-box .number {
+        font-size: 2.5em;
+        font-weight: 700;
+    }
+
+.logo-container {
+    grid-column: 2 / 3;
+    text-align: center;
+    margin-top: 25px;
+}
+
+.halkbank-logo-panel {
+    width: 200px;
+}
+
+.panel-button {
+    background-color: white;
+    color: #005baa;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+    .panel-button:hover {
+        background-color: #e6f0fa;
+    }

@@ -1,0 +1,252 @@
+﻿@model Urun
+
+@{
+    ViewData["Title"] = "Yeni Ürün Ekle";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --halkbank-blue: #005baa;
+            --halkbank-light-blue: #e6f0fa;
+            --halkbank-green: #28a745;
+            --halkbank-gray: #f0f2f5;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--halkbank-gray);
+        }
+
+        .top-bar {
+            background-color: var(--halkbank-blue);
+            color: white;
+            padding: 10px 25px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-bar-left, .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .top-bar-left {
+            justify-self: start;
+        }
+
+        .top-bar-center {
+            justify-self: center;
+        }
+
+        .top-bar-right {
+            justify-self: end;
+        }
+
+        .page-title {
+            font-size: 1.25em;
+            font-weight: 600;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .main-content {
+            padding: 25px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .form-header {
+            background-color: var(--halkbank-blue);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: .5rem;
+                font-weight: 500;
+                font-size: 0.9em;
+            }
+
+            .form-group input, .form-group select, .form-group textarea {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-sizing: border-box;
+                transition: border-color 0.2s;
+            }
+
+                .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+                    border-color: var(--halkbank-blue);
+                    outline: none;
+                }
+
+        .form-actions {
+            text-align: right;
+            padding: 20px;
+            border-top: 1px solid var(--halkbank-gray);
+        }
+
+        .save-button {
+            background-color: var(--halkbank-green);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <a asp-action="Index" class="icon-button" title="Ürün Listesine Dön"><i class="fas fa-arrow-left"></i></a>
+            <h1 class="page-title">Yeni Ürün Ekle</h1>
+        </div>
+        <div class="top-bar-center">
+            <img src="~/img/halkbank-logo.png" alt="Halkbank Logo" style="height: 45px;" />
+        </div>
+        <div class="top-bar-right">
+            <a asp-action="Login" asp-controller="Account" class="icon-button" title="Çıkış Yap"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </header>
+    <main class="main-content">
+        <form asp-action="Create" method="post" class="form-container">
+            @Html.AntiForgeryToken()
+            <div class="form-header">ÜRÜN EKLE</div>
+            <div class="form-grid">
+                <div class="form-column">
+                    <div class="form-group"><label asp-for="MusteriId"></label><select asp-for="MusteriId" asp-items="ViewBag.Musteriler" class="form-control" id="musteriIdInput" onchange="zorunluAlanDogrula('musteriIdInput', 'musteriIdError', 'Borçlu seçimi zorunludur.')"><option value="">Borçlu Seçiniz...</option></select><span id="musteriIdError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="UrunAdi"></label><input asp-for="UrunAdi" class="form-control" id="urunAdiInput" oninput="urunAdiDogrula()" /><span id="urunAdiError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="TakipMiktari"></label><input asp-for="TakipMiktari" class="form-control" id="takipMiktariInput" oninput="decimalDogrula('takipMiktariInput', 'takipMiktariError', 'Takip miktarı zorunludur.')" /><span id="takipMiktariError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="AylikFaizOrani"></label><input asp-for="AylikFaizOrani" class="form-control" id="faizOraniInput" oninput="decimalDogrula('faizOraniInput', 'faizOraniError', 'Aylık faiz oranı zorunludur.')" /><span id="faizOraniError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="MasrafBakiyesi"></label><input asp-for="MasrafBakiyesi" class="form-control" id="masrafBakiyeInput" oninput="decimalDogrula('masrafBakiyeInput', 'masrafBakiyeError', 'Masraf bakiyesi zorunludur.')" /><span id="masrafBakiyeError" class="text-danger"></span></div>
+                </div>
+                <div class="form-column">
+                    <div class="form-group"><label asp-for="AvukatId"></label><select asp-for="AvukatId" asp-items="ViewBag.Avukatlar" class="form-control" id="avukatIdInput" onchange="zorunluAlanDogrula('avukatIdInput', 'avukatIdError', 'Avukat seçimi zorunludur.')"><option value="">Avukat Seçiniz...</option></select><span id="avukatIdError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="KrediBirimKodu"></label><input asp-for="KrediBirimKodu" class="form-control" id="krediBirimKoduInput" oninput="krediBirimKoduDogrula()" /><span id="krediBirimKoduError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="DovizTipi"></label><select asp-for="DovizTipi" asp-items="ViewBag.DovizTipleri" class="form-control" id="dovizTipiInput" onchange="zorunluAlanDogrula('dovizTipiInput', 'dovizTipiError', 'Döviz tipi zorunludur.')"><option value="">Döviz Tipi Seçiniz...</option></select><span id="dovizTipiError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="TakipTarihi"></label><input asp-for="TakipTarihi" type="date" class="form-control" id="takipTarihiInput" onchange="zorunluAlanDogrula('takipTarihiInput', 'takipTarihiError', 'Takip tarihi zorunludur.')" /><span id="takipTarihiError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="FaizBakiyesi"></label><input asp-for="FaizBakiyesi" class="form-control" id="faizBakiyeInput" oninput="decimalDogrula('faizBakiyeInput', 'faizBakiyeError', 'Faiz bakiyesi zorunludur.')" /><span id="faizBakiyeError" class="text-danger"></span></div>
+                </div>
+            </div>
+            <div style="padding: 0 25px 25px 25px;">
+                <div class="form-group"><label asp-for="Aciklama"></label><textarea asp-for="Aciklama" class="form-control" rows="3" id="aciklamaInput" oninput="aciklamaDogrula()"></textarea><span id="aciklamaError" class="text-danger"></span></div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="save-button"><i class="fas fa-save"></i> Ürünü Kaydet</button>
+            </div>
+        </form>
+    </main>
+    <script>
+        function zorunluAlanDogrula(inputId, errorId, mesaj) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            if (!input.value) {
+                error.textContent = mesaj;
+            } else {
+                error.textContent = '';
+            }
+        }
+
+        function urunAdiDogrula() {
+            const input = document.getElementById('urunAdiInput');
+            const error = document.getElementById('urunAdiError');
+            let hataMesaji = '';
+            if (!input.value) {
+                hataMesaji = 'Ürün adı zorunludur.';
+            } else if (input.value.length > 60) {
+                hataMesaji = 'Ürün adı en fazla 60 karakter olabilir.';
+            }
+            error.textContent = hataMesaji;
+        }
+
+        function krediBirimKoduDogrula() {
+            const input = document.getElementById('krediBirimKoduInput');
+            const error = document.getElementById('krediBirimKoduError');
+            const value = input.value;
+            let hataMesaji = '';
+            if (!value) {
+                hataMesaji = 'Kredi birim kodu zorunludur.';
+            } else if (!/^[0-9]*$/.test(value)) {
+                hataMesaji = 'Sadece rakam girilmelidir.';
+            } else if (value.length > 8) {
+                hataMesaji = 'Kredi birim kodu en fazla 8 karakter olabilir.';
+            }
+            error.textContent = hataMesaji;
+        }
+
+        function decimalDogrula(inputId, errorId, mesaj) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            const value = input.value;
+            let hataMesaji = '';
+            if (!value) {
+                hataMesaji = mesaj;
+            } else if (!/^[0-9]+([,\.][0-9]{1,2})?$/.test(value)) {
+                hataMesaji = 'Lütfen geçerli bir sayı giriniz (örn: 1234,56).';
+            }
+            error.textContent = hataMesaji;
+        }
+
+        function aciklamaDogrula() {
+            const input = document.getElementById('aciklamaInput');
+            const error = document.getElementById('aciklamaError');
+            if (input.value && input.value.length > 200) {
+                error.textContent = 'Açıklama en fazla 200 karakter olabilir.';
+            } else {
+                error.textContent = '';
+            }
+        }
+    </script>
+</body>
+</html>

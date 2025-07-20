@@ -1,0 +1,212 @@
+@model HTYS.WebUI.Models.BankaPanelViewModel
+
+@{
+    ViewData["Title"] = "Banka Paneli";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HTYS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        *, *:before, *:after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        .panel-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #004a8f;
+        }
+
+        .panel-bar {
+            background-color: #005baa;
+            padding: 15px 30px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .nav-center {
+            justify-self: center;
+            display: flex;
+            gap: 15px;
+        }
+
+        .user-info {
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+            .icon-button:hover {
+                opacity: 0.8;
+            }
+
+        .panel-bar .center-text {
+            color: white;
+            font-size: 1.2em;
+            font-weight: 600;
+            justify-self: center;
+        }
+
+        .panel-main {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            align-items: center;
+            justify-items: center;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .stat-box {
+            background-color: #005baa;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            width: 100%;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+            .stat-box:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            }
+
+            .stat-box .title {
+                font-size: 1em;
+                margin-bottom: 10px;
+                opacity: 0.9;
+            }
+
+            .stat-box .number {
+                font-size: 2.5em;
+                font-weight: 700;
+            }
+
+        .logo-container {
+            text-align: center;
+        }
+
+        .halkbank-logo-panel {
+            width: 200px;
+        }
+
+        .panel-button {
+            background-color: white;
+            color: #005baa;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+            .panel-button:hover {
+                background-color: #e6f0fa;
+            }
+    </style>
+</head>
+<body>
+    <div class="panel-container">
+        <header class="panel-bar top-bar">
+            <div></div>
+            <div class="nav-center">
+                <a asp-controller="Musteri" asp-action="Index" class="panel-button">Müşteri</a>
+                <a asp-controller="AvukatManagement" asp-action="Index" class="panel-button">Avukat</a>
+                <a asp-controller="Ihtar" asp-action="Index" class="panel-button">İhtar</a>
+                <a asp-controller="Urun" asp-action="Index" class="panel-button">Ürün</a>
+                <a asp-controller="IcraTakip" asp-action="Index" class="panel-button">İcra</a>
+            </div>
+            <div class="user-info">
+                @if (!string.IsNullOrEmpty(ViewBag.KullaniciAdi))
+                {
+                    <span>Hoş Geldin, @ViewBag.KullaniciAdi</span>
+                }
+                <a asp-action="Login" asp-controller="Account" class="icon-button" title="Çıkış Yap">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </header>
+
+        <main class="panel-main">
+            <div class="dashboard-grid">
+                <div class="stat-box">
+                    <div class="title">Avukat Sayısı</div>
+                    <div class="number">@Model.AvukatSayisi</div>
+                </div>
+                <div class="stat-box">
+                    <div class="title">Müşteri Sayısı</div>
+                    <div class="number">@Model.MusteriSayisi</div>
+                </div>
+                <div class="stat-box">
+                    <div class="title">Ürün Sayısı</div>
+                    <div class="number">@Model.UrunSayisi</div>
+                </div>
+                <div class="stat-box">
+                    <div class="title">İcra Sayısı</div>
+                    <div class="number">@Model.IcraSayisi</div>
+                </div>
+                <div class="logo-container">
+                    <img src="~/img/halkbank-logo.png" alt="Halkbank Logo" class="halkbank-logo-panel" />
+                </div>
+                <div class="stat-box">
+                    <div class="title">İhtar Sayısı</div>
+                    <div class="number">@Model.IhtarSayisi</div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="panel-bar bottom-bar">
+            <div></div>
+            <span class="center-text">Önce Halk, Sonra Bankayız.</span>
+            <div></div>
+        </footer>
+    </div>
+</body>
+</html>

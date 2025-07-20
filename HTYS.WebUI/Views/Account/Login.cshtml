@@ -1,0 +1,262 @@
+@model HTYS.WebUI.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Giriş Yap";
+    Layout = null;
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    *, *:before, *:after {
+        box-sizing: border-box;
+    }
+
+    .login-bg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        background-color: #005baa;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .halkbank-login-card {
+        background-color: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 450px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .halkbank-logo {
+        max-width: 150px;
+        margin-bottom: 25px;
+    }
+
+    .halkbank-label {
+        display: block;
+        text-align: left;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        font-size: 1em;
+    }
+
+    .halkbank-btn-lg {
+        width: 100%;
+        padding: 15px;
+        border-radius: 8px;
+        border: none;
+        background-color: #005baa;
+        color: white;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background-color 0.2s;
+    }
+
+        .halkbank-btn-lg:hover {
+            background-color: #004a8f;
+        }
+
+    #girisSecim {
+        width: 100%;
+    }
+
+        #girisSecim button {
+            margin-bottom: 10px;
+        }
+
+    .login-form {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        transition: opacity 0.4s ease, visibility 0.4s ease, max-height 0.4s ease;
+        opacity: 0;
+        visibility: hidden;
+        max-height: 0;
+        overflow: hidden;
+    }
+
+        .login-form.active {
+            opacity: 1;
+            visibility: visible;
+            max-height: 500px;
+        }
+
+    .halkbank-success-box {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+        text-align: center;
+        font-size: 0.9em;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .halkbank-error-box {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+        border: 1px solid;
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+        text-align: center;
+        font-size: 0.9em;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .register-link {
+        font-size: 0.9em;
+        margin-top: 20px;
+        color: #6c757d;
+        width: 100%;
+        text-align: center;
+    }
+
+        .register-link a {
+            color: #005baa;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+            .register-link a:hover {
+                text-decoration: underline;
+            }
+
+    .back-link {
+        color: #6c757d;
+        text-decoration: none;
+        margin-top: 15px;
+        cursor: pointer;
+        display: inline-block;
+        font-weight: 500;
+    }
+
+        .back-link:hover {
+            color: #005baa;
+        }
+
+</style>
+
+
+<div class="login-bg">
+    <div class="halkbank-login-card">
+        <img src="~/img/giris.png" alt="Halkbank" class="halkbank-logo" />
+        <h3 id="loginTitle" class="mb-4" style="color:#005baa;">HTYS Giriş Paneli</h3>
+
+        @if (ViewBag.SuccessMessage != null)
+        {
+            <div id="successMessageBox" class="halkbank-success-box">
+                <i class="fas fa-check-circle" style="margin-right: 5px;"></i> @ViewBag.SuccessMessage
+            </div>
+        }
+
+        @if (ViewData.ModelState.ErrorCount > 0)
+        {
+            <div id="errorMessageBox" class="halkbank-error-box">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div><i class="fas fa-exclamation-circle" style="margin-right: 5px;"></i>@error.ErrorMessage</div>
+                }
+            </div>
+        }
+
+        <div id="girisSecim">
+            <button type="button" class="halkbank-btn-lg" onclick="showForm('Bankaci')">Bankacı Girişi</button>
+            <button type="button" class="halkbank-btn-lg" onclick="showForm('Avukat')">Avukat Girişi</button>
+        </div>
+
+        <form asp-action="Login" method="post" id="BankaciForm" class="login-form">
+            <input type="hidden" name="KullaniciTipi" value="Bankaci" />
+            <label class="halkbank-label" for="bankaciKullaniciAdi">Kullanıcı Adı</label>
+            <input asp-for="KullaniciAdi" id="bankaciKullaniciAdi" class="form-control" />
+            <label class="halkbank-label" for="bankaciSifre">Şifre</label>
+            <input asp-for="Sifre" id="bankaciSifre" type="password" class="form-control" />
+            <button type="submit" class="halkbank-btn-lg">Giriş Yap</button>
+            <span class="back-link" onclick="backToSelect()">— Geri —</span>
+            <div class="register-link">
+                Hesabın yok mu? <a asp-action="Register" asp-route-kullaniciTipi="Bankaci">Bankacı olarak kayıt ol</a>
+            </div>
+        </form>
+
+        <form asp-action="Login" method="post" id="AvukatForm" class="login-form">
+            <input type="hidden" name="KullaniciTipi" value="Avukat" />
+            <label class="halkbank-label" for="avukatKullaniciAdi">Kullanıcı Adı</label>
+            <input asp-for="KullaniciAdi" id="avukatKullaniciAdi" class="form-control" />
+            <label class="halkbank-label" for="avukatSifre">Şifre</label>
+            <input asp-for="Sifre" id="avukatSifre" type="password" class="form-control" />
+            <button type="submit" class="halkbank-btn-lg">Giriş Yap</button>
+            <span class="back-link" onclick="backToSelect()">— Geri —</span>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    function showForm(type) {
+        const successBox = document.getElementById('successMessageBox');
+        if (successBox) {
+            successBox.style.display = 'none';
+        }
+
+        document.getElementById('girisSecim').style.display = 'none';
+        const titleElement = document.getElementById('loginTitle');
+
+        if (type === 'Bankaci') {
+            document.getElementById('BankaciForm').classList.add('active');
+            titleElement.innerText = 'Bankacı Giriş Paneli';
+        } else if (type === 'Avukat') {
+            document.getElementById('AvukatForm').classList.add('active');
+            titleElement.innerText = 'Avukat Giriş Paneli';
+        }
+    }
+
+    function backToSelect() {
+        document.getElementById('BankaciForm').classList.remove('active');
+        document.getElementById('AvukatForm').classList.remove('active');
+        document.getElementById('girisSecim').style.display = 'block';
+        document.getElementById('loginTitle').innerText = 'HTYS Giriş Paneli';
+
+        const errorBox = document.getElementById('errorMessageBox');
+        if (errorBox) {
+            errorBox.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const activeForm = '@(ViewData["ActiveForm"] as string)';
+        if (activeForm) {
+            showForm(activeForm);
+        }
+    });
+</script>

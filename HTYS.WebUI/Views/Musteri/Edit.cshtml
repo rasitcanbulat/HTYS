@@ -1,0 +1,518 @@
+﻿@model Musteri
+
+@{
+    ViewData["Title"] = "Müşteri Bilgilerini Güncelle";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --halkbank-blue: #005baa;
+            --halkbank-light-blue: #e6f0fa;
+            --halkbank-yellow: #ffc107;
+            --halkbank-gray: #f0f2f5;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--halkbank-gray);
+        }
+
+        .top-bar {
+            background-color: var(--halkbank-blue);
+            color: white;
+            padding: 10px 25px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-bar-left, .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .top-bar-left {
+            justify-self: start;
+        }
+
+        .top-bar-center {
+            justify-self: center;
+        }
+
+        .top-bar-right {
+            justify-self: end;
+        }
+
+        .page-title {
+            font-size: 1.25em;
+            font-weight: 600;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .main-content {
+            padding: 25px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .form-header {
+            background-color: var(--halkbank-blue);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            padding: 25px;
+        }
+
+        .form-column h3 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--halkbank-blue);
+            border-bottom: 2px solid var(--halkbank-gray);
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: .5rem;
+                font-weight: 500;
+                font-size: 0.9em;
+            }
+
+            .form-group input, .form-group select {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-sizing: border-box;
+                transition: border-color 0.2s;
+            }
+
+                .form-group input[readonly] {
+                    background-color: #e9ecef;
+                    cursor: not-allowed;
+                }
+
+                .form-group input:focus, .form-group select:focus {
+                    border-color: var(--halkbank-blue);
+                    outline: none;
+                }
+
+        .form-actions {
+            text-align: right;
+            margin-top: 20px;
+            padding: 20px;
+            border-top: 1px solid var(--halkbank-gray);
+        }
+
+        .save-button {
+            background-color: var(--halkbank-yellow);
+            color: black;
+            padding: 12px 30px;
+            border-radius: 5px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 4px;
+        }
+
+        .radio-button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+            .radio-button-group input[type="radio"] {
+                opacity: 0;
+                position: fixed;
+                width: 0;
+            }
+
+            .radio-button-group label {
+                display: inline-block;
+                background-color: var(--halkbank-light-blue);
+                padding: 10px 20px;
+                border-radius: 5px;
+                border: 1px solid #b3c6e0;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .radio-button-group input[type="radio"]:checked + label {
+                background-color: var(--halkbank-blue);
+                color: white;
+                border-color: var(--halkbank-blue);
+            }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: var(--halkbank-light-blue);
+            border-radius: 5px;
+        }
+
+            .checkbox-group input {
+                height: 1.2em;
+                width: 1.2em;
+            }
+
+            .checkbox-group label {
+                margin-left: 10px;
+                font-weight: 600;
+                color: var(--halkbank-blue);
+            }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <a asp-action="Index" asp-controller="Musteri" class="icon-button" title="Müşteri Listesine Dön"><i class="fas fa-arrow-left"></i></a>
+            <h1 class="page-title">Müşteri Güncelle</h1>
+        </div>
+        <div class="top-bar-center">
+            <img src="~/img/halkbank-logo.png" alt="Halkbank Logo" class="top-bar-logo" />
+        </div>
+        <div class="top-bar-right">
+            <a asp-action="Login" asp-controller="Account" class="icon-button" title="Çıkış Yap"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <form asp-action="Edit" method="post" class="form-container">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="OlusturmaTarihi" />
+            <div class="form-header">MÜŞTERİ BİLGİLERİNİ GÜNCELLE</div>
+            <div class="form-grid">
+                <div class="form-column">
+                    <h3>KİŞİSEL BİLGİLER</h3>
+                    <div class="form-group"><label asp-for="MusteriNo"></label><input asp-for="MusteriNo" id="musteriNoInput" oninput="musteriNoDogrula()" readonly /><span id="musteriNoError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="Ad"></label><input asp-for="Ad" id="adInput" oninput="adDogrula()" /><span id="adError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="Soyad"></label><input asp-for="Soyad" id="soyadInput" oninput="soyadDogrula()" /><span id="soyadError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="TCKN"></label><input asp-for="TCKN" id="tcknInput" oninput="tcknDogrula()" /><span id="tcknError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="DogumTarihi"></label><input asp-for="DogumTarihi" type="date" value="@Model.DogumTarihi?.ToString("yyyy-MM-dd")" /><span asp-validation-for="DogumTarihi" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="DogumYeri"></label><input asp-for="DogumYeri" id="dogumYeriInput" oninput="dogumYeriDogrula()" /><span id="dogumYeriError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="Cinsiyet"></label><div class="radio-button-group"><input type="radio" asp-for="Cinsiyet" value="Erkek" id="cinsiyetErkek" name="Cinsiyet" onchange="cinsiyetDogrula()" /><label for="cinsiyetErkek">Erkek</label><input type="radio" asp-for="Cinsiyet" value="Kadın" id="cinsiyetKadin" name="Cinsiyet" onchange="cinsiyetDogrula()" /><label for="cinsiyetKadin">Kadın</label></div><span id="cinsiyetError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="MedeniDurum"></label><div class="radio-button-group"><input type="radio" asp-for="MedeniDurum" value="Bekar" id="medeniBekar" name="MedeniDurum" onchange="medeniDurumDogrula()" /><label for="medeniBekar">Bekar</label><input type="radio" asp-for="MedeniDurum" value="Evli" id="medeniEvli" name="MedeniDurum" onchange="medeniDurumDogrula()" /><label for="medeniEvli">Evli</label><input type="radio" asp-for="MedeniDurum" value="Dul" id="medeniDul" name="MedeniDurum" onchange="medeniDurumDogrula()" /><label for="medeniDul">Dul</label></div><span id="medeniDurumError" class="text-danger"></span></div>
+                </div>
+
+                <div class="form-column">
+                    <h3>NÜFUS & KİMLİK BİLGİLERİ</h3>
+                    <div class="form-group"><label asp-for="BabaAdi"></label><input asp-for="BabaAdi" /></div>
+                    <div class="form-group"><label asp-for="AnneAdi"></label><input asp-for="AnneAdi" /></div>
+                    <div class="form-group"><label asp-for="PasaportNo"></label><input asp-for="PasaportNo" id="pasaportNoInput" oninput="pasaportNoDogrula()" /><span id="pasaportNoError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="NufusaKayitliIl"></label><input asp-for="NufusaKayitliIl" id="nufusIlInput" oninput="nufusIlDogrula()" /><span id="nufusIlError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="CiltNo"></label><input asp-for="CiltNo" id="ciltNoInput" oninput="ciltNoDogrula()" /><span id="ciltNoError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="AileSiraNo"></label><input asp-for="AileSiraNo" id="aileSiraNoInput" oninput="aileSiraNoDogrula()" /><span id="aileSiraNoError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="KutukSiraNo"></label><input asp-for="KutukSiraNo" id="kutukSiraNoInput" oninput="kutukSiraNoDogrula()" /><span id="kutukSiraNoError" class="text-danger"></span></div>
+                </div>
+
+                <div class="form-column">
+                    <h3>ADRES & EK BİLGİLER</h3>
+                    <div class="form-group"><label asp-for="Sehir"></label><select id="sehir" asp-for="Sehir"><option value="">İl Seçiniz</option></select></div>
+                    <div class="form-group"><label asp-for="Ilce"></label><select id="ilce" asp-for="Ilce" disabled><option value="">Önce İl Seçiniz</option></select></div>
+                    <div class="form-group"><label asp-for="Semt"></label><input asp-for="Semt" placeholder="Semt veya Mahalle giriniz" id="semtInput" oninput="semtDogrula()" /><span id="semtError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="AdresDetay"></label><input asp-for="AdresDetay" placeholder="Cadde, sokak, no vb." /></div>
+                    <div class="form-group"><label asp-for="VergiDairesi"></label><input asp-for="VergiDairesi" id="vergiDairesiInput" oninput="vergiDairesiDogrula()" /> <span id="vergiDairesiError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="VergiNo"></label><input asp-for="VergiNo" id="vergiNoInput" oninput="vergiNoDogrula()" /><span id="vergiNoError" class="text-danger"></span></div>
+                    <div class="form-group checkbox-group"><input class="form-check-input" type="checkbox" asp-for="HayattaMi" /><label asp-for="HayattaMi"></label></div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="save-button"><i class="fas fa-sync-alt"></i> Değişiklikleri Kaydet</button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const sehirSelect = document.getElementById('sehir');
+            const ilceSelect = document.getElementById('ilce');
+
+            const currentSehirAdi = '@Model.Sehir';
+            const currentIlceAdi = '@Model.Ilce';
+
+            const ilResponse = await fetch('/Adres/GetIller');
+            const iller = await ilResponse.json();
+
+            let selectedIlId = null;
+            iller.forEach(il => {
+                const option = new Option(il.ad, il.ad);
+                if (il.ad === currentSehirAdi) {
+                    option.selected = true;
+                    selectedIlId = il.id;
+                }
+                sehirSelect.add(option);
+            });
+
+            if (selectedIlId) {
+                ilceSelect.disabled = false;
+                const ilceResponse = await fetch(`/Adres/GetIlceler?ilId=${selectedIlId}`);
+                const ilceler = await ilceResponse.json();
+
+                ilceSelect.innerHTML = '<option value="">İlçe Seçiniz</option>';
+                ilceler.forEach(ilce => {
+                    const option = new Option(ilce.ad, ilce.ad);
+                    if (ilce.ad === currentIlceAdi) {
+                        option.selected = true;
+                    }
+                    ilceSelect.add(option);
+                });
+            }
+
+            sehirSelect.addEventListener('change', async function () {
+                const secilenIlAdi = this.value;
+                ilceSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+                ilceSelect.disabled = true;
+
+                if (secilenIlAdi) {
+                    const secilenIl = iller.find(i => i.ad === secilenIlAdi);
+                    if (secilenIl) {
+                        const ilceResponse = await fetch(`/Adres/GetIlceler?ilId=${secilenIl.id}`);
+                        const data = await ilceResponse.json();
+
+                        ilceSelect.innerHTML = '<option value="">İlçe Seçiniz</option>';
+                        data.forEach(ilce => {
+                            ilceSelect.add(new Option(ilce.ad, ilce.ad));
+                        });
+                        ilceSelect.disabled = false;
+                    }
+                } else {
+                    ilceSelect.innerHTML = '<option value="">Önce İl Seçiniz</option>';
+                }
+            });
+        });
+
+        // --- ANLIK FORM DOĞRULAMA (CLIENT-SIDE VALIDATION) ---
+
+        function musteriNoDogrula() {
+            const input = document.getElementById('musteriNoInput');
+            const error = document.getElementById('musteriNoError');
+            const value = input.value;
+            let hataMesaji = '';
+            if (!value) {
+                hataMesaji = 'Müşteri Numarası zorunludur.';
+            } else if (value.length > 8) {
+                hataMesaji = 'Müşteri Numarası en fazla 8 karakter olabilir.';
+            }
+            error.textContent = hataMesaji;
+        }
+
+        function adDogrula() {
+            const input = document.getElementById('adInput');
+            const error = document.getElementById('adError');
+            const value = input.value;
+            const harfRegex = /^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$/;
+            let hataMesaji = '';
+            if (!value) {
+                hataMesaji = 'Ad alanı zorunludur.';
+            } else if (value.length > 30) {
+                hataMesaji = 'Ad en fazla 30 karakter olabilir.';
+            } else if (!harfRegex.test(value)) {
+                hataMesaji = 'Ad sadece harflerden oluşmalıdır.';
+            }
+            error.textContent = hataMesaji;
+        }
+
+        function soyadDogrula() {
+            const input = document.getElementById('soyadInput');
+            const error = document.getElementById('soyadError');
+            const value = input.value;
+            const harfRegex = /^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$/;
+            let hataMesaji = '';
+            if (!value) {
+                hataMesaji = 'Soyad alanı zorunludur.';
+            } else if (value.length > 50) {
+                hataMesaji = 'Soyad en fazla 50 karakter olabilir.';
+            } else if (!harfRegex.test(value)) {
+                hataMesaji = 'Soyad sadece harflerden oluşmalıdır.';
+            }
+            error.textContent = hataMesaji;
+        }
+
+        function tcknDogrula() {
+            const input = document.getElementById('tcknInput');
+            const error = document.getElementById('tcknError');
+            const value = input.value;
+            const tcknRegex = /^[1-9]{1}[0-9]{9}[0,2,4,6,8]{1}$/;
+            let hataMesaji = '';
+            if (!value) {
+                hataMesaji = 'TCKN zorunludur.';
+            } else if (value.length !== 11) {
+                hataMesaji = 'TCKN 11 haneli olmalıdır.';
+            } else if (!tcknRegex.test(value)) {
+                hataMesaji = 'Geçersiz TCKN formatı.';
+            }
+            error.textContent = hataMesaji;
+        }
+
+        function dogumYeriDogrula() {
+            const input = document.getElementById('dogumYeriInput');
+            const error = document.getElementById('dogumYeriError');
+            if (input.value && input.value.length > 30) {
+                error.textContent = 'Doğum Yeri en fazla 30 karakter olabilir.';
+            } else {
+                error.textContent = '';
+            }
+        }
+
+        function cinsiyetDogrula() {
+            const error = document.getElementById('cinsiyetError');
+            if (!document.querySelector('input[name="Cinsiyet"]:checked')) {
+                error.textContent = 'Cinsiyet seçimi zorunludur.';
+            } else {
+                error.textContent = '';
+            }
+        }
+
+        function medeniDurumDogrula() {
+            const error = document.getElementById('medeniDurumError');
+            if (!document.querySelector('input[name="MedeniDurum"]:checked')) {
+                error.textContent = 'Medeni durum seçimi zorunludur.';
+            } else {
+                error.textContent = '';
+            }
+        }
+
+        function pasaportNoDogrula() {
+            const input = document.getElementById('pasaportNoInput');
+            const error = document.getElementById('pasaportNoError');
+            if (input.value && input.value.length > 8) {
+                error.textContent = 'Pasaport No en fazla 8 karakter olabilir.';
+            } else {
+                error.textContent = '';
+            }
+        }
+
+        function nufusIlDogrula() {
+            const input = document.getElementById('nufusIlInput');
+            const error = document.getElementById('nufusIlError');
+            if (input.value && input.value.length > 30) {
+                error.textContent = 'Nüfusa Kayıtlı İl en fazla 30 karakter olabilir.';
+            } else {
+                error.textContent = '';
+            }
+        }
+
+        function ciltNoDogrula() {
+            const input = document.getElementById('ciltNoInput');
+            const error = document.getElementById('ciltNoError');
+            const value = input.value;
+            let hataMesaji = '';
+            if (value) {
+                if (!/^[0-9]+$/.test(value)) {
+                    hataMesaji = 'Lütfen sadece sayı giriniz.';
+                } else if (value.length > 2) {
+                    hataMesaji = 'Cilt No en fazla 2 karakter olabilir.';
+                }
+            }
+            error.textContent = hataMesaji;
+        }
+
+        function aileSiraNoDogrula() {
+            const input = document.getElementById('aileSiraNoInput');
+            const error = document.getElementById('aileSiraNoError');
+            const value = input.value;
+            let hataMesaji = '';
+            if (value) {
+                if (!/^[0-9]+$/.test(value)) {
+                    hataMesaji = 'Lütfen sadece sayı giriniz.';
+                } else if (value.length > 3) {
+                    hataMesaji = 'Aile Sıra No en fazla 3 karakter olabilir.';
+                }
+            }
+            error.textContent = hataMesaji;
+        }
+
+        function kutukSiraNoDogrula() {
+            const input = document.getElementById('kutukSiraNoInput');
+            const error = document.getElementById('kutukSiraNoError');
+            const value = input.value;
+            let hataMesaji = '';
+            if (value) {
+                if (!/^[0-9]+$/.test(value)) {
+                    hataMesaji = 'Lütfen sadece sayı giriniz.';
+                } else if (value.length > 3) {
+                    hataMesaji = 'Kütük Sıra No en fazla 3 karakter olabilir.';
+                }
+            }
+            error.textContent = hataMesaji;
+        }
+
+        function semtDogrula() {
+            const input = document.getElementById('semtInput');
+            const error = document.getElementById('semtError');
+            if (input.value && input.value.length > 50) {
+                error.textContent = 'Semt / Mahalle en fazla 50 karakter olabilir.';
+            } else {
+                error.textContent = '';
+            }
+        }
+
+        function vergiDairesiDogrula() {
+            const input = document.getElementById('vergiDairesiInput');
+            const error = document.getElementById('vergiDairesiError');
+            if (input.value && input.value.length > 30) {
+                error.textContent = 'Vergi Dairesi en fazla 30 karakter olabilir.';
+            } else {
+                error.textContent = '';
+            }
+        }
+
+        function vergiNoDogrula() {
+            const input = document.getElementById('vergiNoInput');
+            const error = document.getElementById('vergiNoError');
+            if (input.value && input.value.length > 8) {
+                error.textContent = 'Vergi No en fazla 8 karakter olabilir.';
+            } else {
+                error.textContent = '';
+            }
+        }
+    </script>
+</body>
+</html>

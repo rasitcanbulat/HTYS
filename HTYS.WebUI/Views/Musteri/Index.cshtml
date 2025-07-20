@@ -1,0 +1,91 @@
+﻿@model MusteriListViewModel
+
+@{
+    ViewData["Title"] = "Müşteri Yönetim";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: #eef2f5; }
+        .top-bar { background-color: #005baa; color: white; padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 15px; }
+        .top-bar-center { font-size: 1.25em; font-weight: 600; }
+        .top-bar-logo { height: 70px; }
+        .icon-button { background: none; border: none; color: white; font-size: 1.5em; cursor: pointer; }
+        .user-info { font-weight: 500; }
+        .main-content { padding: 25px; }
+        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .search-box { display: flex; align-items: center; background-color: white; padding: 5px 10px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .search-box input { border: none; outline: none; margin-left: 10px; font-size: 1em; }
+        .add-button { background-color: #28a745; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .customer-list-container { background-color: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .customer-row { display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; padding: 15px 20px; border-bottom: 1px solid #eef2f5; cursor: pointer; transition: background-color 0.2s; }
+        .customer-row:hover { background-color: #f8f9fa; }
+        .customer-row:last-child { border-bottom: none; }
+        .customer-info { display: flex; align-items: center; gap: 10px; }
+        .pagination { display: flex; justify-content: center; padding: 20px; gap: 10px; }
+        .page-number { padding: 8px 15px; background-color: #ddd; color: #333; border-radius: 5px; text-decoration: none; }
+        .page-number.active { background-color: #005baa; color: white; }
+        #customerDetailContainer { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <a asp-action="Index" asp-controller="BankaPanel" class="icon-button" title="Ana Panele Dön"><i class="fas fa-arrow-left"></i></a>
+            <h1 class="top-bar-center">Müşteri Yönetim</h1>
+        </div>
+        <div class="top-bar-center">
+            <img src="~/img/halkbank-logo.png" alt="Halkbank Logo" style="height: 45px;" />
+        </div>
+        <div class="top-bar-right">
+            <a href="/Account/Login" button class="icon-button" title="Çıkış Yap"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </header>
+    <main class="main-content">
+        <div class="action-bar">
+            <form asp-action="Index" method="get" class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" name="aramaTerimi" placeholder="Müşteri Adı/Soyadı Ara" value="@Model.AramaTerimi" />
+                <button type="submit" style="display:none;"></button>
+            </form>
+            <a asp-action="Create" asp-controller="Musteri" class="add-button"><i class="fas fa-plus"></i> Müşteri Ekle</a>
+        </div>
+        <div class="customer-list-container">
+            @foreach (var musteri in Model.Musteriler)
+            {
+                <div class="customer-row" onclick="loadCustomerDetails(@musteri.Id)">
+                    <span class="customer-info"><i class="fas fa-user"></i> Kişi: @musteri.Ad @musteri.Soyad</span>
+                    <span class="customer-info"><i class="fas fa-id-card"></i> Müşteri No: @musteri.MusteriNo</span>
+                    <span class="customer-info"><i class="fas fa-info-circle"></i> TCKN: @musteri.TCKN</span>
+                    <span class="customer-info"><i class="fas fa-map-marker-alt"></i> İl/İlçe: @musteri.Sehir - @musteri.Ilce</span>
+                </div>
+            }
+        </div>
+        <div id="customerDetailContainer"></div>
+        <div class="pagination">
+            @for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
+            {
+                <a asp-action="Index" asp-route-sayfa="@i" asp-route-aramaTerimi="@Model.AramaTerimi" 
+                   class="page-number @(i == Model.PagingInfo.CurrentPage ? "active" : "")">@i</a>
+            }
+        </div>
+    </main>
+    <script>
+        function loadCustomerDetails(customerId) {
+            const container = document.getElementById('customerDetailContainer');
+            fetch(`/Musteri/Details/${customerId}`)
+                .then(response => response.text())
+                .then(html => { container.innerHTML = html; })
+                .catch(err => console.error('Detaylar yüklenemedi:', err));
+        }
+    </script>
+</body>
+</html>

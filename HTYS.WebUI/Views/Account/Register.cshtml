@@ -1,0 +1,79 @@
+﻿@model HTYS.WebUI.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = Model.KullaniciTipi + " Kayıt Ol";
+    Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<style>
+    .captcha-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 1rem;
+    }
+
+    .captcha-image {
+        border: 1px solid #b3c6e0;
+        border-radius: 8px;
+    }
+
+    .captcha-refresh-btn {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        color: #005baa;
+        cursor: pointer;
+    }
+</style>
+
+<div class="login-bg">
+    <div class="halkbank-login-card">
+        <img src="~/img/giris.png" alt="Halkbank" class="halkbank-logo" />
+        <h3 class="mb-4" style="color:#005baa;">@Model.KullaniciTipi Kayıt Paneli</h3>
+
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="KullaniciTipi" />
+
+            <div class="form-group mb-3">
+                <label asp-for="KullaniciAdi" class="halkbank-label"></label>
+                <input asp-for="KullaniciAdi" class="form-control" />
+                <span asp-validation-for="KullaniciAdi" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Sifre" class="halkbank-label"></label>
+                <input asp-for="Sifre" class="form-control" />
+                <span asp-validation-for="Sifre" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="SifreTekrar" class="halkbank-label"></label>
+                <input asp-for="SifreTekrar" class="form-control" />
+                <span asp-validation-for="SifreTekrar" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="CaptchaCode" class="halkbank-label"></label>
+                <div class="captcha-container">
+                    <img id="captchaImage" src="@Url.Action("CaptchaImage", "Account")" class="captcha-image" alt="Doğrulama Kodu" />
+                    <button type="button" id="refreshCaptcha" class="captcha-refresh-btn" title="Yenile">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <input asp-for="CaptchaCode" class="form-control" autocomplete="off" />
+                <span asp-validation-for="CaptchaCode" class="text-danger"></span>
+            </div>
+            <button type="submit" class="halkbank-btn-lg">Kayıt Ol</button>
+            <a asp-action="Login" class="btn btn-link">← Giriş Ekranına Dön</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('refreshCaptcha').addEventListener('click', function () {
+        document.getElementById('captchaImage').src = '@Url.Action("CaptchaImage", "Account")?' + new Date().getTime();
+    });
+</script>
