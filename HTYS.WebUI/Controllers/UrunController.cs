@@ -1,11 +1,13 @@
 ﻿using HTYS.BusinessLayer;
 using HTYS.Entities;
+using HTYS.WebUI.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
 
 namespace HTYS.WebUI.Controllers
 {
+    [AuthenticationFilter]
     public class UrunController : Controller
     {
         private readonly UrunYonetim _urunYonetim;

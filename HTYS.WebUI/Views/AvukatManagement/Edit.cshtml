@@ -329,7 +329,7 @@
             });
         });
 
-        // --- ANLIK FORM DOĞRULAMA (CLIENT-SIDE VALIDATION) ---
+        // DOĞRULAMA
 
         function adDogrula() {
             const adInput = document.getElementById('adInput');
@@ -452,10 +452,10 @@
         function ibanDogrula(inputId, errorId) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            const value = input.value.toUpperCase().replace(/\s/g, ''); // Boşlukları kaldır ve büyük harfe çevir
+            const value = input.value.toUpperCase().replace(/\s/g, '');
 
             let hataMesaji = '';
-            if (value) { // Sadece doluysa kontrol et
+            if (value) {
                 if (!value.startsWith('TR')) {
                     hataMesaji = "IBAN 'TR' ile başlamalıdır.";
                 } else if (value.length !== 26) {

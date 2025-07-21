@@ -18,6 +18,7 @@
             --halkbank-light-blue: #e6f0fa;
             --halkbank-green: #28a745;
             --halkbank-gray: #f0f2f5;
+            --halkbank-red: #dc3545;
         }
 
         body {
@@ -140,9 +141,11 @@
         }
 
         .text-danger {
-            color: #dc3545;
+            color: var(--halkbank-red);
             font-size: 0.875em;
             margin-top: 4px;
+            display: block;
+            min-height: 1em;
         }
     </style>
 </head>
@@ -160,7 +163,7 @@
         </div>
     </header>
     <main class="main-content">
-        <form asp-action="Create" method="post" class="form-container">
+        <form asp-action="Create" method="post" class="form-container" onsubmit="return formuDogrulaVeGonder(event)">
             @Html.AntiForgeryToken()
             <div class="form-header">ÜRÜN EKLE</div>
             <div class="form-grid">
@@ -188,6 +191,46 @@
         </form>
     </main>
     <script>
+        function formuDogrulaVeGonder(event) {
+            zorunluAlanDogrula('musteriIdInput', 'musteriIdError', 'Borçlu seçimi zorunludur.');
+            urunAdiDogrula();
+            decimalDogrula('takipMiktariInput', 'takipMiktariError', 'Takip miktarı zorunludur.');
+            decimalDogrula('faizOraniInput', 'faizOraniError', 'Aylık faiz oranı zorunludur.');
+            decimalDogrula('masrafBakiyeInput', 'masrafBakiyeError', 'Masraf bakiyesi zorunludur.');
+            zorunluAlanDogrula('avukatIdInput', 'avukatIdError', 'Avukat seçimi zorunludur.');
+            krediBirimKoduDogrula();
+            zorunluAlanDogrula('dovizTipiInput', 'dovizTipiError', 'Döviz tipi zorunludur.');
+            zorunluAlanDogrula('takipTarihiInput', 'takipTarihiError', 'Takip tarihi zorunludur.');
+            decimalDogrula('faizBakiyeInput', 'faizBakiyeError', 'Faiz bakiyesi zorunludur.');
+            aciklamaDogrula();
+
+            const form = event.target;
+            const errorSpans = form.querySelectorAll('.text-danger');
+            let formGecerli = true;
+            errorSpans.forEach(span => {
+                if (span.textContent.trim() !== '') {
+                    formGecerli = false;
+                }
+            });
+
+            if (!formGecerli) {
+                event.preventDefault();
+                alert('Lütfen formdaki kırmızı ile belirtilen zorunlu veya hatalı alanları düzeltin.');
+                return false;
+            } else {
+                gonderimButonunuKilitle(form);
+                return true;
+            }
+        }
+
+        function gonderimButonunuKilitle(formElement) {
+            const button = formElement.querySelector('button[type="submit"]');
+            if (button) {
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kaydediliyor...';
+            }
+        }
+
         function zorunluAlanDogrula(inputId, errorId, mesaj) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);

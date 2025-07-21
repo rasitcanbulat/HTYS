@@ -1,10 +1,12 @@
 ﻿using HTYS.BusinessLayer;
 using HTYS.Entities;
+using HTYS.WebUI.Filters;
 using HTYS.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HTYS.WebUI.Controllers
 {
+    [AuthenticationFilter]
     public class MusteriController : Controller
     {
         private readonly MusteriYonetim _musteriYonetim;

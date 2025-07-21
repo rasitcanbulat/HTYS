@@ -18,6 +18,7 @@
             --halkbank-light-blue: #e6f0fa;
             --halkbank-green: #28a745;
             --halkbank-gray: #f0f2f5;
+            --halkbank-red: #dc3545;
         }
 
         body {
@@ -36,10 +37,13 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .top-bar-left {
+        .top-bar-left, .top-bar-right {
             display: flex;
             align-items: center;
             gap: 15px;
+        }
+
+        .top-bar-left {
             justify-self: start;
         }
 
@@ -48,9 +52,6 @@
         }
 
         .top-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
             justify-self: end;
         }
 
@@ -151,10 +152,11 @@
         }
 
         .text-danger {
-            color: #dc3545;
+            color: var(--halkbank-red);
             font-size: 0.875em;
             margin-top: 4px;
             display: block;
+            min-height: 1em;
         }
 
         .radio-button-group {
@@ -203,6 +205,47 @@
                 font-weight: 600;
                 color: var(--halkbank-blue);
             }
+
+        .loading-overlay {
+            position: fixed;
+            display: none;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            cursor: progress;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid var(--halkbank-blue);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -211,46 +254,44 @@
             <a asp-action="Index" class="icon-button" title="Avukat Listesine Dön"><i class="fas fa-arrow-left"></i></a>
             <h1 class="page-title">Avukat Ekle</h1>
         </div>
-        <div class="top-bar-center">
-            <img src="~/img/halkbank-logo.png" alt="Halkbank Logo" style="height: 45px;" />
-        </div>
+        <div class="top-bar-center"></div>
         <div class="top-bar-right">
             <a asp-action="Login" asp-controller="Account" class="icon-button" title="Çıkış Yap"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </header>
 
     <main class="main-content">
-        <form asp-action="Create" method="post" class="form-container">
+        <form asp-action="Create" method="post" class="form-container" onsubmit="return formuDogrulaVeGonder(event)">
             @Html.AntiForgeryToken()
             <div class="form-header">AVUKAT EKLE</div>
             <div class="form-grid">
                 <div class="form-column">
                     <h3>KİMLİK BİLGİLERİ</h3>
-                    <div class="form-group"><label asp-for="Ad"></label><input asp-for="Ad" id="adInput" oninput="adDogrula()" /><span id="adError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="Soyad"></label><input asp-for="Soyad" id="soyadInput" oninput="soyadDogrula()" /><span id="soyadError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="TCKN"></label><input asp-for="TCKN" id="tcknInput" oninput="tcknDogrula()" /><span id="tcknError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="KullaniciAdi"></label><input asp-for="KullaniciAdi" id="kullaniciAdiInput" oninput="kullaniciAdiDogrula()" /><span id="kullaniciAdiError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="VergiDairesi"></label><input asp-for="VergiDairesi" id="vergiDairesiInput" oninput="vergiDairesiDogrula()" /><span id="vergiDairesiError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="VergiNo"></label><input asp-for="VergiNo" id="vergiNoInput" oninput="vergiNoDogrula()" /><span id="vergiNoError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="Ad"></label><input asp-for="Ad" id="adInput" oninput="adDogrulama()" /><span id="adError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="Soyad"></label><input asp-for="Soyad" id="soyadInput" oninput="soyadDogrulama()" /><span id="soyadError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="TCKN"></label><input asp-for="TCKN" id="tcknInput" oninput="tcknDogrulama()" /><span id="tcknError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="KullaniciAdi"></label><input asp-for="KullaniciAdi" id="kullaniciAdiInput" oninput="kullaniciAdiDogrulama()" /><span id="kullaniciAdiError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="VergiDairesi"></label><input asp-for="VergiDairesi" id="vergiDairesiInput" oninput="vergiDairesiDogrulama()" /><span id="vergiDairesiError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="VergiNo"></label><input asp-for="VergiNo" id="vergiNoInput" oninput="vergiNoDogrulama()" /><span id="vergiNoError" class="text-danger"></span></div>
                 </div>
 
                 <div class="form-column">
                     <h3>İLETİŞİM BİLGİLERİ</h3>
-                    <div class="form-group"><label asp-for="CepTelefonu"></label><input asp-for="CepTelefonu" id="cepTelInput" oninput="telefonDogrula('cepTelInput', 'cepTelError')" placeholder="(5xx) xxx xx xx" /><span id="cepTelError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="IsTelefonu"></label><input asp-for="IsTelefonu" id="isTelInput" oninput="telefonDogrula('isTelInput', 'isTelError')" placeholder="(xxx) xxx xx xx" /><span id="isTelError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="FaksNo"></label><input asp-for="FaksNo" id="faksNoInput" oninput="telefonDogrula('faksNoInput', 'faksNoError')" placeholder="(xxx) xxx xx xx" /><span id="faksNoError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="EmailAdresi"></label><input asp-for="EmailAdresi" id="emailInput" oninput="emailDogrula()" placeholder="ornek@halkbank.com.tr" /><span id="emailError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="HalkbankVadesizIBAN"></label><input asp-for="HalkbankVadesizIBAN" id="halkbankIbanInput" oninput="ibanDogrula('halkbankIbanInput', 'halkbankIbanError')" placeholder="TR" /><span id="halkbankIbanError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="DigerBankaIBAN"></label><input asp-for="DigerBankaIBAN" id="digerIbanInput" oninput="ibanDogrula('digerIbanInput', 'digerIbanError')" placeholder="TR" /><span id="digerIbanError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="CepTelefonu"></label><input asp-for="CepTelefonu" id="cepTelefonuInput" oninput="telefonDogrulama('cepTelefonuInput', 'cepTelefonuError')" placeholder="(5xx) xxx xx xx" /><span id="cepTelefonuError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="IsTelefonu"></label><input asp-for="IsTelefonu" id="isTelefonuInput" oninput="telefonDogrulama('isTelefonuInput', 'isTelefonuError')" placeholder="(xxx) xxx xx xx" /><span id="isTelefonuError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="FaksNo"></label><input asp-for="FaksNo" id="faksNoInput" oninput="telefonDogrulama('faksNoInput', 'faksNoError')" placeholder="(xxx) xxx xx xx" /><span id="faksNoError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="EmailAdresi"></label><input asp-for="EmailAdresi" id="emailInput" oninput="emailDogrulama()" placeholder="ornek@halkbank.com.tr" /><span id="emailError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="HalkbankVadesizIBAN"></label><input asp-for="HalkbankVadesizIBAN" id="ibanInput" oninput="ibanDogrulama('ibanInput', 'ibanError')" placeholder="TR" /><span id="ibanError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="DigerBankaIBAN"></label><input asp-for="DigerBankaIBAN" placeholder="TR" /></div>
                 </div>
 
                 <div class="form-column">
                     <h3>ADRES & AYARLAR</h3>
                     <div class="form-group"><label asp-for="Sehir"></label><select id="sehir" asp-for="Sehir"><option value="">İl Seçiniz</option></select></div>
                     <div class="form-group"><label asp-for="Ilce"></label><select id="ilce" asp-for="Ilce" disabled><option value="">Önce İl Seçiniz</option></select></div>
-                    <div class="form-group"><label asp-for="Semt"></label><input asp-for="Semt" id="semtInput" oninput="semtDogrula()" placeholder="Semt veya Mahalle giriniz" /><span id="semtError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="Semt"></label><input asp-for="Semt" id="semtInput" oninput="semtDogrulama()" placeholder="Semt veya Mahalle giriniz" /><span id="semtError" class="text-danger"></span></div>
                     <div class="form-group"><label asp-for="TamAdres"></label><input asp-for="TamAdres" placeholder="Cadde, sokak, no vb." /></div>
-                    <div class="form-group"><label asp-for="AvukatTipi"></label><div class="radio-button-group"><input type="radio" asp-for="AvukatTipi" value="Sözleşmeli" id="tipSozlesmeli" name="AvukatTipi" onchange="avukatTipiDogrula()" /><label for="tipSozlesmeli">Sözleşmeli</label><input type="radio" asp-for="AvukatTipi" value="Baro" id="tipBaro" name="AvukatTipi" onchange="avukatTipiDogrula()" /><label for="tipBaro">Baro</label></div><span id="avukatTipiError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="AvukatTipi"></label><div class="radio-button-group"><input type="radio" name="AvukatTipi" value="Sözleşmeli" id="tipSozlesmeli" onchange="avukatTipiDogrulama()" /><label for="tipSozlesmeli">Sözleşmeli</label><input type="radio" name="AvukatTipi" value="Baro" id="tipBaro" onchange="avukatTipiDogrulama()" /><label for="tipBaro">Baro</label></div><span id="avukatTipiError" class="text-danger"></span></div>
                     <div class="form-group checkbox-container"><input type="checkbox" asp-for="HesapAktifMi" /><label asp-for="HesapAktifMi"></label></div>
                 </div>
             </div>
@@ -260,53 +301,29 @@
         </form>
     </main>
 
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">İsteğiniz gerçekleştiriliyor, lütfen bekleyin...</p>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', async function () {
             const sehirSelect = document.getElementById('sehir');
             const ilceSelect = document.getElementById('ilce');
-
-            const currentSehirAdi = '@Model.Sehir';
-            const currentIlceAdi = '@Model.Ilce';
-
             const ilResponse = await fetch('/Adres/GetIller');
             const iller = await ilResponse.json();
-
-            let selectedIlId = null;
             iller.forEach(il => {
-                const option = new Option(il.ad, il.ad);
-                if (il.ad === currentSehirAdi) {
-                    option.selected = true;
-                    selectedIlId = il.id;
-                }
-                sehirSelect.add(option);
+                sehirSelect.add(new Option(il.ad, il.ad));
             });
-
-            if (selectedIlId) {
-                ilceSelect.disabled = false;
-                const ilceResponse = await fetch(`/Adres/GetIlceler?ilId=${selectedIlId}`);
-                const ilceler = await ilceResponse.json();
-
-                ilceSelect.innerHTML = '<option value="">İlçe Seçiniz</option>';
-                ilceler.forEach(ilce => {
-                    const option = new Option(ilce.ad, ilce.ad);
-                    if (ilce.ad === currentIlceAdi) {
-                        option.selected = true;
-                    }
-                    ilceSelect.add(option);
-                });
-            }
-
             sehirSelect.addEventListener('change', async function () {
                 const secilenIlAdi = this.value;
                 ilceSelect.innerHTML = '<option value="">Yükleniyor...</option>';
                 ilceSelect.disabled = true;
-
                 if (secilenIlAdi) {
                     const secilenIl = iller.find(i => i.ad === secilenIlAdi);
                     if (secilenIl) {
                         const ilceResponse = await fetch(`/Adres/GetIlceler?ilId=${secilenIl.id}`);
                         const data = await ilceResponse.json();
-
                         ilceSelect.innerHTML = '<option value="">İlçe Seçiniz</option>';
                         data.forEach(ilce => {
                             ilceSelect.add(new Option(ilce.ad, ilce.ad));
@@ -319,149 +336,163 @@
             });
         });
 
-        // --- DOĞRULAMA ---
+        function formuDogrulaVeGonder(event) {
+            adDogrulama();
+            soyadDogrulama();
+            tcknDogrulama();
+            kullaniciAdiDogrulama();
+            vergiDairesiDogrulama();
+            vergiNoDogrulama();
+            telefonDogrulama('cepTelefonuInput', 'cepTelefonuError');
+            telefonDogrulama('isTelefonuInput', 'isTelefonuError');
+            telefonDogrulama('faksNoInput', 'faksNoError');
+            emailDogrulama();
+            ibanDogrulama('ibanInput', 'ibanError');
+            semtDogrulama();
+            avukatTipiDogrulama();
 
-        function adDogrula() {
-            const adInput = document.getElementById('adInput');
-            const adError = document.getElementById('adError');
-            const adValue = adInput.value;
-            const harfRegex = /^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$/;
+            const form = event.target;
+            const errorSpans = form.querySelectorAll('.text-danger');
+            let formGecerli = true;
+            errorSpans.forEach(span => {
+                if (span.textContent.trim() !== '') {
+                    formGecerli = false;
+                }
+            });
 
-            let hataMesaji = '';
-            if (!adValue) {
-                hataMesaji = 'Ad alanı zorunludur.';
-            } else if (adValue.length > 30) {
-                hataMesaji = 'Ad en fazla 30 karakter olabilir.';
-            } else if (!harfRegex.test(adValue)) {
-                hataMesaji = 'Ad sadece harflerden oluşmalıdır.';
+            if (!formGecerli) {
+                event.preventDefault();
+                alert('Lütfen formdaki kırmızı ile belirtilen zorunlu veya hatalı alanları düzeltin.');
+                return false;
+            } else {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.display = 'flex';
+                const submitButton = form.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                return true;
             }
-            adError.textContent = hataMesaji;
         }
 
-        function soyadDogrula() {
-            const soyadInput = document.getElementById('soyadInput');
-            const soyadError = document.getElementById('soyadError');
-            const soyadValue = soyadInput.value;
-            const harfRegex = /^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$/;
+        // DOĞRULAMA
 
-            let hataMesaji = '';
-            if (!soyadValue) {
-                hataMesaji = 'Soyad alanı zorunludur.';
-            } else if (soyadValue.length > 50) {
-                hataMesaji = 'Soyad en fazla 50 karakter olabilir.';
-            } else if (!harfRegex.test(soyadValue)) {
-                hataMesaji = 'Soyad sadece harflerden oluşmalıdır.';
+        function adDogrulama() {
+            const input = document.getElementById('adInput');
+            const error = document.getElementById('adError');
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
+            let message = '';
+            if (!input.value) {
+                message = 'Ad alanı zorunludur.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Ad alanına özel karakter veya rakam giremezsiniz.';
+            } else if (input.value.length > 30) {
+                message = 'Ad en fazla 30 karakter olabilir.';
             }
-            soyadError.textContent = hataMesaji;
+            error.textContent = message;
         }
 
-        function tcknDogrula() {
-            const tcknInput = document.getElementById('tcknInput');
-            const tcknError = document.getElementById('tcknError');
-            const tcknValue = tcknInput.value;
-
-            let hataMesaji = '';
-            if (!tcknValue) {
-                hataMesaji = 'TCKN alanı zorunludur.';
-            } else if (!/^[0-9]+$/.test(tcknValue)) {
-                hataMesaji = 'TCKN sadece rakamlardan oluşmalıdır.';
-            } else if (tcknValue.length !== 11) {
-                hataMesaji = 'TCKN 11 haneli olmalıdır.';
+        function soyadDogrulama() {
+            const input = document.getElementById('soyadInput');
+            const error = document.getElementById('soyadError');
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
+            let message = '';
+            if (!input.value) {
+                message = 'Soyad alanı zorunludur.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Soyad alanına özel karakter veya rakam giremezsiniz.';
+            } else if (input.value.length > 50) {
+                message = 'Soyad en fazla 50 karakter olabilir.';
             }
-            tcknError.textContent = hataMesaji;
+            error.textContent = message;
         }
 
-        function kullaniciAdiDogrula() {
+        function kullaniciAdiDogrulama() {
             const input = document.getElementById('kullaniciAdiInput');
             const error = document.getElementById('kullaniciAdiError');
-            const value = input.value;
-
-            let hataMesaji = '';
-            if (!value) {
-                hataMesaji = 'Kullanıcı adı zorunludur.';
-            } else if (value.length > 15) {
-                hataMesaji = 'Kullanıcı adı en fazla 15 karakter olabilir.';
+            let message = '';
+            if (!input.value) {
+                message = 'Kullanıcı adı zorunludur.';
+            } else if (input.value.length > 15) {
+                message = 'Kullanıcı adı en fazla 15 karakter olabilir.';
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
 
-        function vergiDairesiDogrula() {
+        function tcknDogrulama() {
+            const input = document.getElementById('tcknInput');
+            const error = document.getElementById('tcknError');
+            let message = '';
+            if (!input.value) {
+                message = 'TCKN zorunludur.';
+            } else if (!/^[0-9]+$/.test(input.value)) {
+                message = 'TCKN sadece rakamlardan oluşmalıdır.';
+            } else if (input.value.length !== 11) {
+                message = 'TCKN 11 haneli olmalıdır.';
+            }
+            error.textContent = message;
+        }
+
+        function emailDogrulama() {
+            const input = document.getElementById('emailInput');
+            const error = document.getElementById('emailError');
+            const halkbankRegex = new RegExp("^[\\w-\\.]+@@halkbank\\.com\\.tr$");
+            let message = '';
+            if (!input.value) {
+                message = 'E-Mail adresi zorunludur.';
+            } else if (!halkbankRegex.test(input.value)) {
+                message = 'E-mail adresi halkbank.com.tr ile bitmelidir.';
+            }
+            error.textContent = message;
+        }
+
+        function vergiNoDogrulama() {
+            const input = document.getElementById('vergiNoInput');
+            const error = document.getElementById('vergiNoError');
+            let message = '';
+            if (input.value) {
+                if (!/^[0-9]+$/.test(input.value)) {
+                    message = 'Vergi No sadece rakamlardan oluşmalıdır.';
+                } else if (input.value.length > 8) {
+                    message = 'Vergi No en fazla 8 karakter olabilir.';
+                }
+            }
+            error.textContent = message;
+        }
+
+        function vergiDairesiDogrulama() {
             const input = document.getElementById('vergiDairesiInput');
             const error = document.getElementById('vergiDairesiError');
-
-           if (/^[0-9]+$/.test(input.value)) {
-                hataMesaji = 'Vergi Dairesi rakam içermemelidir.';
-            } 
-            else if (input.value && input.value.length > 30) {
+            if (input.value && input.value.length > 30) {
                 error.textContent = 'Vergi Dairesi en fazla 30 karakter olabilir.';
-            } 
-            else {
+            } else {
                 error.textContent = '';
             }
         }
 
-        function vergiNoDogrula() {
-            const input = document.getElementById('vergiNoInput');
-            const error = document.getElementById('vergiNoError');
-            const value = input.value;
-
-            let hataMesaji = '';
-            if (value) { 
-                if (!/^[0-9]+$/.test(value)) {
-                    hataMesaji = 'Vergi No sadece rakamlardan oluşmalıdır.';
-                } else if (value.length > 8) {
-                    hataMesaji = 'Vergi No en fazla 8 karakter olabilir.';
-                }
-            }
-            error.textContent = hataMesaji;
-        }
-
-        function telefonDogrula(inputId, errorId) {
+        function telefonDogrulama(inputId, errorId) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            const value = input.value;
-            const telefonRegex = /^[0-9\s()+-]*$/;
-
-            let hataMesaji = '';
-            if (value && !telefonRegex.test(value)) {
-                hataMesaji = 'Geçersiz telefon numarası formatı.';
-            } else if (input.value.length > 10) {
-                hataMesaji = 'Geçersiz telefon numarası uzunluğu.';
+            if (input.value && !/^[0-9\s()+-]*$/.test(input.value)) {
+                error.textContent = 'Geçersiz telefon numarası formatı.';
+            } else {
+                error.textContent = '';
             }
-            error.textContent = hataMesaji;
         }
 
-        function emailDogrula() {
-            const input = document.getElementById('emailInput');
-            const error = document.getElementById('emailError');
-            const value = input.value;
-
-            let hataMesaji = '';
-            if (!value) {
-                hataMesaji = 'E-mail adresi zorunludur.';
-            }
-            error.textContent = hataMesaji;
-        }
-
-        function ibanDogrula(inputId, errorId) {
+        function ibanDogrulama(inputId, errorId) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            const value = input.value.toUpperCase().replace(/\s/g, '');
-
-            let hataMesaji = '';
-            if (value) {
-                if (!value.startsWith('TR')) {
-                    hataMesaji = "IBAN 'TR' ile başlamalıdır.";
-                } else if (value.length !== 26) {
-                    hataMesaji = 'IBAN 26 karakter olmalıdır.';
-                } else if (!/^[0-9]+$/.test(value.substring(2))) {
-                    hataMesaji = "IBAN'ın ilk 2 karakterinden sonrası sadece rakam olmalıdır.";
+            const ibanRegex = new RegExp("^TR[0-9]{24}$");
+            let message = '';
+            if (input.value) {
+                const temizlenmisIban = input.value.toUpperCase().replace(/\s/g, '');
+                if (!ibanRegex.test(temizlenmisIban)) {
+                    message = "IBAN, 'TR' ile başlamalı ve 26 karakter olmalıdır.";
                 }
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
 
-        function semtDogrula() {
+        function semtDogrulama() {
             const input = document.getElementById('semtInput');
             const error = document.getElementById('semtError');
             if (input.value && input.value.length > 50) {
@@ -471,7 +502,7 @@
             }
         }
 
-        function avukatTipiDogrula() {
+        function avukatTipiDogrulama() {
             const error = document.getElementById('avukatTipiError');
             const isChecked = document.querySelector('input[name="AvukatTipi"]:checked');
             if (!isChecked) {
@@ -480,7 +511,6 @@
                 error.textContent = '';
             }
         }
-
     </script>
 </body>
 </html>

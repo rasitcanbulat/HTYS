@@ -18,6 +18,7 @@
             --halkbank-light-blue: #e6f0fa;
             --halkbank-green: #28a745;
             --halkbank-gray: #f0f2f5;
+            --halkbank-red: #dc3545;
         }
 
         body {
@@ -44,10 +45,6 @@
 
         .top-bar-left {
             justify-self: start;
-        }
-
-        .top-bar-logo {
-            height: 70px;
         }
 
         .top-bar-center {
@@ -155,9 +152,11 @@
         }
 
         .text-danger {
-            color: #dc3545;
+            color: var(--halkbank-red);
             font-size: 0.875em;
             margin-top: 4px;
+            display: block;
+            min-height: 1em;
         }
 
         .radio-button-group {
@@ -206,6 +205,47 @@
                 font-weight: 600;
                 color: var(--halkbank-blue);
             }
+
+        .loading-overlay {
+            position: fixed;
+            display: none;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            cursor: progress;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid var(--halkbank-blue);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -215,7 +255,7 @@
             <h1 class="page-title">Müşteri Ekle</h1>
         </div>
         <div class="top-bar-center">
-            <img src="~/img/halkbank-logo.png" alt="Halkbank Logo" class="top-bar-logo" />
+            <img src="~/img/halkbank-logo.png" alt="Halkbank Logo" style="height: 45px;" />
         </div>
         <div class="top-bar-right">
             <a asp-action="Login" asp-controller="Account" class="icon-button" title="Çıkış Yap"><i class="fas fa-sign-out-alt"></i></a>
@@ -223,7 +263,8 @@
     </header>
 
     <main class="main-content">
-        <form asp-action="Create" method="post" class="form-container">
+        <form asp-action="Create" method="post" class="form-container" onsubmit="return formuDogrulaVeGonder(event)">
+            @Html.AntiForgeryToken()
             <div class="form-header">MÜŞTERİ EKLE</div>
             <div class="form-grid">
                 <div class="form-column">
@@ -232,10 +273,10 @@
                     <div class="form-group"><label asp-for="Ad"></label><input asp-for="Ad" id="adInput" oninput="adDogrula()" /><span id="adError" class="text-danger"></span></div>
                     <div class="form-group"><label asp-for="Soyad"></label><input asp-for="Soyad" id="soyadInput" oninput="soyadDogrula()" /><span id="soyadError" class="text-danger"></span></div>
                     <div class="form-group"><label asp-for="TCKN"></label><input asp-for="TCKN" id="tcknInput" oninput="tcknDogrula()" /><span id="tcknError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="DogumTarihi"></label><input asp-for="DogumTarihi" type="date" /><span asp-validation-for="DogumTarihi" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="DogumTarihi"></label><input asp-for="DogumTarihi" type="date" /></div>
                     <div class="form-group"><label asp-for="DogumYeri"></label><input asp-for="DogumYeri" id="dogumYeriInput" oninput="dogumYeriDogrula()" /><span id="dogumYeriError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="Cinsiyet"></label><div class="radio-button-group"><input type="radio" asp-for="Cinsiyet" value="Erkek" id="cinsiyetErkek" name="Cinsiyet" onchange="cinsiyetDogrula()" /><label for="cinsiyetErkek">Erkek</label><input type="radio" asp-for="Cinsiyet" value="Kadın" id="cinsiyetKadin" name="Cinsiyet" onchange="cinsiyetDogrula()" /><label for="cinsiyetKadin">Kadın</label></div><span id="cinsiyetError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="MedeniDurum"></label><div class="radio-button-group"><input type="radio" asp-for="MedeniDurum" value="Bekar" id="medeniBekar" name="MedeniDurum" onchange="medeniDurumDogrula()" /><label for="medeniBekar">Bekar</label><input type="radio" asp-for="MedeniDurum" value="Evli" id="medeniEvli" name="MedeniDurum" onchange="medeniDurumDogrula()" /><label for="medeniEvli">Evli</label><input type="radio" asp-for="MedeniDurum" value="Dul" id="medeniDul" name="MedeniDurum" onchange="medeniDurumDogrula()" /><label for="medeniDul">Dul</label></div><span id="medeniDurumError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="Cinsiyet"></label><div class="radio-button-group"><input type="radio" name="Cinsiyet" value="Erkek" id="cinsiyetErkek" onchange="cinsiyetDogrula()" /><label for="cinsiyetErkek">Erkek</label><input type="radio" name="Cinsiyet" value="Kadın" id="cinsiyetKadin" onchange="cinsiyetDogrula()" /><label for="cinsiyetKadin">Kadın</label></div><span id="cinsiyetError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="MedeniDurum"></label><div class="radio-button-group"><input type="radio" name="MedeniDurum" value="Bekar" id="medeniBekar" onchange="medeniDurumDogrula()" /><label for="medeniBekar">Bekar</label><input type="radio" name="MedeniDurum" value="Evli" id="medeniEvli" onchange="medeniDurumDogrula()" /><label for="medeniEvli">Evli</label><input type="radio" name="MedeniDurum" value="Dul" id="medeniDul" onchange="medeniDurumDogrula()" /><label for="medeniDul">Dul</label></div><span id="medeniDurumError" class="text-danger"></span></div>
                 </div>
 
                 <div class="form-column">
@@ -266,29 +307,29 @@
         </form>
     </main>
 
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">İsteğiniz gerçekleştiriliyor, lütfen bekleyin...</p>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', async function () {
             const sehirSelect = document.getElementById('sehir');
             const ilceSelect = document.getElementById('ilce');
-
             const ilResponse = await fetch('/Adres/GetIller');
             const iller = await ilResponse.json();
-
             iller.forEach(il => {
                 sehirSelect.add(new Option(il.ad, il.ad));
             });
-
             sehirSelect.addEventListener('change', async function () {
                 const secilenIlAdi = this.value;
                 ilceSelect.innerHTML = '<option value="">Yükleniyor...</option>';
                 ilceSelect.disabled = true;
-
                 if (secilenIlAdi) {
                     const secilenIl = iller.find(i => i.ad === secilenIlAdi);
                     if (secilenIl) {
                         const ilceResponse = await fetch(`/Adres/GetIlceler?ilId=${secilenIl.id}`);
                         const data = await ilceResponse.json();
-
                         ilceSelect.innerHTML = '<option value="">İlçe Seçiniz</option>';
                         data.forEach(ilce => {
                             ilceSelect.add(new Option(ilce.ad, ilce.ad));
@@ -301,67 +342,104 @@
             });
         });
 
-        // --- ANLIK FORM DOĞRULAMA (CLIENT-SIDE VALIDATION) ---
+        function formuDogrulaVeGonder(event) {
+            // Tüm doğrulama fonksiyonlarını çalıştır
+            musteriNoDogrula();
+            adDogrula();
+            soyadDogrula();
+            tcknDogrula();
+            dogumYeriDogrula();
+            cinsiyetDogrula();
+            medeniDurumDogrula();
+            pasaportNoDogrula();
+            nufusIlDogrula();
+            ciltNoDogrula();
+            aileSiraNoDogrula();
+            kutukSiraNoDogrula();
+            semtDogrula();
+            vergiDairesiDogrula();
+            vergiNoDogrula();
+
+            const form = event.target;
+            const errorSpans = form.querySelectorAll('.text-danger');
+            let formGecerli = true;
+            errorSpans.forEach(span => {
+                if (span.textContent.trim() !== '') {
+                    formGecerli = false;
+                }
+            });
+
+            if (!formGecerli) {
+                event.preventDefault();
+                alert('Lütfen formdaki kırmızı ile belirtilen zorunlu veya hatalı alanları düzeltin.');
+                return false;
+            } else {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.display = 'flex';
+                const submitButton = form.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                return true;
+            }
+        }
+
+        // DOĞRULAMA
 
         function musteriNoDogrula() {
             const input = document.getElementById('musteriNoInput');
             const error = document.getElementById('musteriNoError');
-            const value = input.value;
-            let hataMesaji = '';
-            if (!value) {
-                hataMesaji = 'Müşteri Numarası zorunludur.';
-            } else if (value.length > 8) {
-                hataMesaji = 'Müşteri Numarası en fazla 8 karakter olabilir.';
+            let message = '';
+            if (!input.value) {
+                message = 'Müşteri Numarası zorunludur.';
+            } else if (!/^[0-9]+$/.test(input.value)) {
+                message = 'Müşteri Numarası sadece rakamlardan oluşmalıdır.';
+            } else if (input.value.length > 8) {
+                message = 'Müşteri Numarası en fazla 8 karakter olabilir.';
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
 
         function adDogrula() {
             const input = document.getElementById('adInput');
             const error = document.getElementById('adError');
-            const value = input.value;
-            const harfRegex = /^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$/;
-            let hataMesaji = '';
-            if (!value) {
-                hataMesaji = 'Ad alanı zorunludur.';
-            } else if (value.length > 30) {
-                hataMesaji = 'Ad en fazla 30 karakter olabilir.';
-            } else if (!harfRegex.test(value)) {
-                hataMesaji = 'Ad sadece harflerden oluşmalıdır.';
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ .]+$/;
+            let message = '';
+            if (!input.value) {
+                message = 'Ad alanı zorunludur.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Ad alanına özel karakter veya rakam giremezsiniz.';
+            } else if (input.value.length > 30) {
+                message = 'Ad en fazla 30 karakter olabilir.';
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
 
         function soyadDogrula() {
             const input = document.getElementById('soyadInput');
             const error = document.getElementById('soyadError');
-            const value = input.value;
-            const harfRegex = /^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$/;
-            let hataMesaji = '';
-            if (!value) {
-                hataMesaji = 'Soyad alanı zorunludur.';
-            } else if (value.length > 50) {
-                hataMesaji = 'Soyad en fazla 50 karakter olabilir.';
-            } else if (!harfRegex.test(value)) {
-                hataMesaji = 'Soyad sadece harflerden oluşmalıdır.';
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
+            let message = '';
+            if (!input.value) {
+                message = 'Soyad alanı zorunludur.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Soyad alanına özel karakter veya rakam giremezsiniz.';
+            } else if (input.value.length > 50) {
+                message = 'Soyad en fazla 50 karakter olabilir.';
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
 
         function tcknDogrula() {
             const input = document.getElementById('tcknInput');
             const error = document.getElementById('tcknError');
-            const value = input.value;
-            const tcknRegex = /^[1-9]{1}[0-9]{9}[0,2,4,6,8]{1}$/;
-            let hataMesaji = '';
-            if (!value) {
-                hataMesaji = 'TCKN zorunludur.';
-            } else if (value.length !== 11) {
-                hataMesaji = 'TCKN 11 haneli olmalıdır.';
-            } else if (!tcknRegex.test(value)) {
-                hataMesaji = 'Geçersiz TCKN formatı.';
+            let message = '';
+            if (!input.value) {
+                message = 'TCKN zorunludur.';
+            } else if (!/^[0-9]+$/.test(input.value)) {
+                message = 'TCKN sadece rakamlardan oluşmalıdır.';
+            } else if (input.value.length !== 11) {
+                message = 'TCKN 11 haneli olmalıdır.';
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
 
         function dogumYeriDogrula() {
@@ -415,46 +493,43 @@
         function ciltNoDogrula() {
             const input = document.getElementById('ciltNoInput');
             const error = document.getElementById('ciltNoError');
-            const value = input.value;
-            let hataMesaji = '';
-            if (value) {
-                if (!/^[0-9]+$/.test(value)) {
-                    hataMesaji = 'Lütfen sadece sayı giriniz.';
-                } else if (value.length > 2) {
-                    hataMesaji = 'Cilt No en fazla 2 karakter olabilir.';
+            let message = '';
+            if (input.value) {
+                if (!/^[0-9]+$/.test(input.value)) {
+                    message = 'Lütfen sadece sayı giriniz.';
+                } else if (input.value.length > 2) {
+                    message = 'Cilt No en fazla 2 karakter olabilir.';
                 }
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
 
         function aileSiraNoDogrula() {
             const input = document.getElementById('aileSiraNoInput');
             const error = document.getElementById('aileSiraNoError');
-            const value = input.value;
-            let hataMesaji = '';
-            if (value) {
-                if (!/^[0-9]+$/.test(value)) {
-                    hataMesaji = 'Lütfen sadece sayı giriniz.';
-                } else if (value.length > 3) {
-                    hataMesaji = 'Aile Sıra No en fazla 3 karakter olabilir.';
+            let message = '';
+            if (input.value) {
+                if (!/^[0-9]+$/.test(input.value)) {
+                    message = 'Lütfen sadece sayı giriniz.';
+                } else if (input.value.length > 3) {
+                    message = 'Aile Sıra No en fazla 3 karakter olabilir.';
                 }
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
 
         function kutukSiraNoDogrula() {
             const input = document.getElementById('kutukSiraNoInput');
             const error = document.getElementById('kutukSiraNoError');
-            const value = input.value;
-            let hataMesaji = '';
-            if (value) {
-                if (!/^[0-9]+$/.test(value)) {
-                    hataMesaji = 'Lütfen sadece sayı giriniz.';
-                } else if (value.length > 3) {
-                    hataMesaji = 'Kütük Sıra No en fazla 3 karakter olabilir.';
+            let message = '';
+            if (input.value) {
+                if (!/^[0-9]+$/.test(input.value)) {
+                    message = 'Lütfen sadece sayı giriniz.';
+                } else if (input.value.length > 3) {
+                    message = 'Kütük Sıra No en fazla 3 karakter olabilir.';
                 }
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
 
         function semtDogrula() {
@@ -480,13 +555,16 @@
         function vergiNoDogrula() {
             const input = document.getElementById('vergiNoInput');
             const error = document.getElementById('vergiNoError');
-            if (input.value && input.value.length > 8) {
-                error.textContent = 'Vergi No en fazla 8 karakter olabilir.';
-            } else {
-                error.textContent = '';
+            let message = '';
+            if (input.value) {
+                if (!/^[0-9]+$/.test(input.value)) {
+                    message = 'Vergi Numarası sadece rakamlardan oluşmalıdır.';
+                } else if (input.value.length > 8) {
+                    message = 'Vergi No en fazla 8 karakter olabilir.';
+                }
             }
+            error.textContent = message;
         }
-
     </script>
 </body>
 </html>

@@ -1,10 +1,12 @@
 ﻿using HTYS.BusinessLayer;
 using HTYS.Entities;
+using HTYS.WebUI.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
 namespace HTYS.WebUI.Controllers
 {
+    [AuthenticationFilter]
     public class AvukatManagementController : Controller
     {
         private readonly AvukatYonetim _avukatYonetim;

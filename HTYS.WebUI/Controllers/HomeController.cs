@@ -1,9 +1,11 @@
+using HTYS.WebUI.Filters;
 using HTYS.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace HTYS.WebUI.Controllers
 {
+    [AuthenticationFilter]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

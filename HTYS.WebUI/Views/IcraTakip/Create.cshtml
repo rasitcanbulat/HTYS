@@ -18,6 +18,7 @@
             --halkbank-light-blue: #e6f0fa;
             --halkbank-green: #28a745;
             --halkbank-gray: #f0f2f5;
+            --halkbank-red: #dc3545;
         }
 
         body {
@@ -139,9 +140,11 @@
         }
 
         .text-danger {
-            color: #dc3545;
+            color: var(--halkbank-red);
             font-size: 0.875em;
             margin-top: 4px;
+            display: block;
+            min-height: 1em;
         }
 
         .radio-button-group {
@@ -187,13 +190,13 @@
         </div>
     </header>
     <main class="main-content">
-        <form asp-action="Create" method="post" class="form-container">
+        <form asp-action="Create" method="post" class="form-container" onsubmit="return formuDogrulaVeGonder(event)">
             @Html.AntiForgeryToken()
             <div class="form-header">İCRA TAKİP BİLGİLERİ</div>
             <div class="form-grid">
                 <div class="form-column">
-                    <div class="form-group"><label asp-for="MusteriId"></label><select asp-for="MusteriId" asp-items="ViewBag.Musteriler" class="form-control" id="musteriSelect" onchange="zorunluAlanDogrula('musteriSelect', 'musteriError', 'Borçlu seçimi zorunludur.')"><option value="">Borçlu Seçiniz...</option></select><span id="musteriError" class="text-danger"></span></div>
-                    <div class="form-group"><label asp-for="AvukatId"></label><select asp-for="AvukatId" asp-items="ViewBag.Avukatlar" class="form-control" id="avukatSelect" onchange="zorunluAlanDogrula('avukatSelect', 'avukatError', 'Avukat seçimi zorunludur.')"><option value="">Avukat Seçiniz...</option></select><span id="avukatError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="MusteriId"></label><select asp-for="MusteriId" asp-items="ViewBag.Musteriler" class="form-control" id="musteriSelect" onchange="musteriSecildi()"><option value="">Borçlu Seçiniz...</option></select><span id="musteriError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="AvukatId"></label><select asp-for="AvukatId" asp-items="ViewBag.Avukatlar" class="form-control" id="avukatSelect" onchange="avukatSecildi()"><option value="">Avukat Seçiniz...</option></select><span id="avukatError" class="text-danger"></span></div>
                     <div class="form-group"><label asp-for="AvukatTCKN"></label><input asp-for="AvukatTCKN" class="form-control" id="avukatTcknInput" readonly /></div>
                     <div class="form-group"><label asp-for="TakipTarihi"></label><input asp-for="TakipTarihi" type="date" class="form-control" value="@Model.TakipTarihi.ToString("yyyy-MM-dd")" id="takipTarihiInput" onchange="zorunluAlanDogrula('takipTarihiInput', 'takipTarihiError', 'Takip tarihi zorunludur.')" /><span id="takipTarihiError" class="text-danger"></span></div>
                     <div class="form-group">
@@ -222,58 +225,91 @@
         document.addEventListener('DOMContentLoaded', function () {
             const musteriSelect = document.getElementById('musteriSelect');
             const avukatSelect = document.getElementById('avukatSelect');
+            musteriSelect.addEventListener('change', musteriSecildi);
+            avukatSelect.addEventListener('change', avukatSecildi);
+        });
+
+        function formuDogrulaVeGonder(event) {
+            zorunluAlanDogrula('musteriSelect', 'musteriError', 'Borçlu seçimi zorunludur.');
+            zorunluAlanDogrula('avukatSelect', 'avukatError', 'Avukat seçimi zorunludur.');
+            zorunluAlanDogrula('takipTarihiInput', 'takipTarihiError', 'Takip tarihi zorunludur.');
+            takipTipiDogrula();
+            zorunluAlanDogrula('ihtarSelect', 'ihtarError', 'İhtar seçimi zorunludur.');
+            zorunluAlanDogrula('urunSelect', 'urunError', 'Ürün seçimi zorunludur.');
+            icraMuduruguDogrula();
+            icraDosyaNoDogrula();
+            mahiyetKoduDogrula();
+
+            const form = event.target;
+            const errorSpans = form.querySelectorAll('.text-danger');
+            let formGecerli = true;
+            errorSpans.forEach(span => {
+                if (span.textContent.trim() !== '') {
+                    formGecerli = false;
+                }
+            });
+
+            if (!formGecerli) {
+                event.preventDefault();
+                alert('Lütfen formdaki kırmızı ile belirtilen zorunlu veya hatalı alanları düzeltin.');
+                return false;
+            } else {
+                gonderimButonunuKilitle(form);
+                return true;
+            }
+        }
+
+        function gonderimButonunuKilitle(formElement) {
+            const button = formElement.querySelector('button[type="submit"]');
+            if (button) {
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kaydediliyor...';
+            }
+        }
+
+        function musteriSecildi() {
+            zorunluAlanDogrula('musteriSelect', 'musteriError', 'Borçlu seçimi zorunludur.');
+            const musteriSelect = document.getElementById('musteriSelect');
             const ihtarSelect = document.getElementById('ihtarSelect');
             const urunSelect = document.getElementById('urunSelect');
+            const musteriId = musteriSelect.value;
+            ihtarSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+            urunSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+            ihtarSelect.disabled = true;
+            urunSelect.disabled = true;
+            if (!musteriId) {
+                ihtarSelect.innerHTML = '<option value="">Önce Borçlu Seçiniz...</option>';
+                urunSelect.innerHTML = '<option value="">Önce Borçlu Seçiniz...</option>';
+                return;
+            }
+            fetch(`/IcraTakip/GetIhtarlarByMusteriId?musteriId=${musteriId}`).then(res => res.json()).then(data => {
+                ihtarSelect.innerHTML = '<option value="">İhtar Seçiniz...</option>';
+                data.forEach(item => ihtarSelect.add(new Option(item.ihtarNo, item.id)));
+                ihtarSelect.disabled = false;
+            });
+            fetch(`/IcraTakip/GetUrunlerByMusteriId?musteriId=${musteriId}`).then(res => res.json()).then(data => {
+                urunSelect.innerHTML = '<option value="">Ürün Seçiniz...</option>';
+                data.forEach(item => urunSelect.add(new Option(item.urunAdi, item.id)));
+                urunSelect.disabled = false;
+            });
+        }
+
+        function avukatSecildi() {
+            zorunluAlanDogrula('avukatSelect', 'avukatError', 'Avukat seçimi zorunludur.');
+            const avukatSelect = document.getElementById('avukatSelect');
             const avukatTcknInput = document.getElementById('avukatTcknInput');
-
-            musteriSelect.addEventListener('change', function () {
-                const musteriId = this.value;
-                ihtarSelect.innerHTML = '<option value="">Yükleniyor...</option>';
-                urunSelect.innerHTML = '<option value="">Yükleniyor...</option>';
-                ihtarSelect.disabled = true;
-                urunSelect.disabled = true;
-
-                if (!musteriId) {
-                    ihtarSelect.innerHTML = '<option value="">Önce Borçlu Seçiniz...</option>';
-                    urunSelect.innerHTML = '<option value="">Önce Borçlu Seçiniz...</option>';
-                    return;
-                }
-
-                fetch(`/IcraTakip/GetIhtarlarByMusteriId?musteriId=${musteriId}`).then(res => res.json()).then(data => {
-                    ihtarSelect.innerHTML = '<option value="">İhtar Seçiniz...</option>';
-                    data.forEach(item => ihtarSelect.add(new Option(item.ihtarNo, item.id)));
-                    ihtarSelect.disabled = false;
-                });
-
-                fetch(`/IcraTakip/GetUrunlerByMusteriId?musteriId=${musteriId}`).then(res => res.json()).then(data => {
-                    urunSelect.innerHTML = '<option value="">Ürün Seçiniz...</option>';
-                    data.forEach(item => urunSelect.add(new Option(item.urunAdi, item.id)));
-                    urunSelect.disabled = false;
-                });
+            const avukatId = avukatSelect.value;
+            avukatTcknInput.value = '';
+            if (!avukatId) return;
+            fetch(`/IcraTakip/GetAvukatInfo?avukatId=${avukatId}`).then(res => res.json()).then(data => {
+                if (data && data.tckn) { avukatTcknInput.value = data.tckn; }
             });
-
-            avukatSelect.addEventListener('change', function () {
-                const avukatId = this.value;
-                avukatTcknInput.value = '';
-                zorunluAlanDogrula('avukatSelect', 'avukatError', 'Avukat seçimi zorunludur.');
-                if (!avukatId) return;
-
-                fetch(`/IcraTakip/GetAvukatInfo?avukatId=${avukatId}`).then(res => res.json()).then(data => {
-                    if (data && data.tckn) {
-                        avukatTcknInput.value = data.tckn;
-                    }
-                });
-            });
-        });
+        }
 
         function zorunluAlanDogrula(inputId, errorId, mesaj) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            if (!input.value) {
-                error.textContent = mesaj;
-            } else {
-                error.textContent = '';
-            }
+            if (!input.value) { error.textContent = mesaj; } else { error.textContent = ''; }
         }
 
         function takipTipiDogrula() {
@@ -288,45 +324,42 @@
         function icraMuduruguDogrula() {
             const input = document.getElementById('icraMuduruguInput');
             const error = document.getElementById('icraMuduruguError');
-            let hataMesaji = '';
+            let message = '';
             if (!input.value) {
-                hataMesaji = 'İcra müdürlüğü zorunludur.';
+                message = 'İcra müdürlüğü zorunludur.';
             } else if (input.value.length > 50) {
-                hataMesaji = 'İcra müdürlüğü en fazla 50 karakter olabilir.';
+                message = 'İcra müdürlüğü en fazla 50 karakter olabilir.';
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
 
         function icraDosyaNoDogrula() {
             const input = document.getElementById('icraDosyaNoInput');
             const error = document.getElementById('icraDosyaNoError');
-            const value = input.value;
-            let hataMesaji = '';
-            if (!value) {
-                hataMesaji = 'İcra dosya no zorunludur.';
-            } else if (!/^[0-9]*$/.test(value)) {
-                hataMesaji = 'Sadece rakam girilmelidir.';
-            } else if (value.length > 8) {
-                hataMesaji = 'İcra Dosya No en fazla 8 rakam olabilir.';
+            let message = '';
+            if (!input.value) {
+                message = 'İcra dosya no zorunludur.';
+            } else if (!/^[0-9]*$/.test(input.value)) {
+                message = 'Sadece rakam girilmelidir.';
+            } else if (input.value.length > 8) {
+                message = 'İcra Dosya No en fazla 8 rakam olabilir.';
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
 
         function mahiyetKoduDogrula() {
             const input = document.getElementById('mahiyetKoduInput');
             const error = document.getElementById('mahiyetKoduError');
-            const value = input.value;
-            let hataMesaji = '';
-            if (!value) {
-                hataMesaji = 'Mahiyet kodu zorunludur.';
-            } else if (!/^[0-9]*$/.test(value)) {
-                hataMesaji = 'Sadece rakam girilmelidir.';
-            } else if (value.length > 12) {
-                hataMesaji = 'Mahiyet Kodu en fazla 12 rakam olabilir.';
+            let message = '';
+            if (!input.value) {
+                message = 'Mahiyet kodu zorunludur.';
+            } else if (!/^[0-9]*$/.test(input.value)) {
+                message = 'Sadece rakam girilmelidir.';
+            } else if (input.value.length > 12) {
+                message = 'Mahiyet Kodu en fazla 12 rakam olabilir.';
             }
-            error.textContent = hataMesaji;
+            error.textContent = message;
         }
-
     </script>
 </body>
 </html>

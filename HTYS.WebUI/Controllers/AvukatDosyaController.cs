@@ -1,8 +1,10 @@
 ﻿using HTYS.BusinessLayer;
+using HTYS.WebUI.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HTYS.WebUI.Controllers
 {
+    [AuthenticationFilter]
     public class AvukatDosyaController : Controller
     {
         private readonly IhtarYonetim _ihtarYonetim;
