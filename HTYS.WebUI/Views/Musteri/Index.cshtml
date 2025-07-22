@@ -34,6 +34,64 @@
         .page-number { padding: 8px 15px; background-color: #ddd; color: #333; border-radius: 5px; text-decoration: none; }
         .page-number.active { background-color: #005baa; color: white; }
         #customerDetailContainer { margin-top: 20px; }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #005baa;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .modal-body {
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .btn-confirm-delete {
+            background-color: #dc3545;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -78,6 +136,23 @@
             }
         </div>
     </main>
+
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">Silme Onayı</div>
+            <div id="modalBodyText" class="modal-body">
+                Yükleniyor...
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn btn-cancel" onclick="closeModal()">İptal</button>
+                <form id="deleteForm" asp-action="Delete" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="modal-btn btn-confirm-delete">Evet, Sil</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         function loadCustomerDetails(customerId) {
             const container = document.getElementById('customerDetailContainer');

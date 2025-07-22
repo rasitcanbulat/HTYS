@@ -13,7 +13,6 @@ namespace HTYS.DataAccessLayer
         public DbSet<LoginAccount> LoginAccounts { get; set; }
         public DbSet<Il> Iller { get; set; }
         public DbSet<Ilce> Ilceler { get; set; }
-        public DbSet<Semt> Semtler { get; set; }
         public DbSet<Urun> Urunler { get; set; }
         public DbSet<Ihtar> Ihtarlar { get; set; }
         public DbSet<IcraTakip> IcraTakipleri { get; set; }

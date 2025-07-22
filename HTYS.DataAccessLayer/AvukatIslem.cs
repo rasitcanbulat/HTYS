@@ -1,6 +1,5 @@
 ﻿using HTYS.Entities;
-using System.Collections.Generic;
-using System.Linq;
+
 
 namespace HTYS.DataAccessLayer
 {
@@ -21,9 +20,12 @@ namespace HTYS.DataAccessLayer
         }
         public void Sil(int id)
         {
-            var avukat = _context.Avukatlar.Find(id); if (avukat != null)
+            var avukat = _context.Avukatlar.Find(id);
+            if (avukat != null)
             {
-                _context.Avukatlar.Remove(avukat); _context.SaveChanges();
+                avukat.AktifMi = false; 
+                _context.Avukatlar.Update(avukat);
+                _context.SaveChanges();
             }
         }
         public Avukat? IdyeGoreGetir(int id)
@@ -32,7 +34,7 @@ namespace HTYS.DataAccessLayer
         }
         public List<Avukat> HepsiniGetir()
         {
-            return _context.Avukatlar.ToList();
+            return _context.Avukatlar.Where(a => a.AktifMi).ToList();
         }
 
         public int ToplamAvukatSayisiGetir()

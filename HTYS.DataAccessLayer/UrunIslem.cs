@@ -1,7 +1,5 @@
 ﻿using HTYS.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HTYS.DataAccessLayer
 {
@@ -12,7 +10,7 @@ namespace HTYS.DataAccessLayer
 
         public List<Urun> HepsiniGetir()
         {
-            return _context.Urunler.Include(u => u.Borclu).Include(u => u.Avukat).ToList();
+            return _context.Urunler.Where(u => u.AktifMi).Include(u => u.Borclu).Include(u => u.Avukat).ToList();
         }
 
         public Urun IdyeGoreGetir(int id)
@@ -37,7 +35,8 @@ namespace HTYS.DataAccessLayer
             var urun = _context.Urunler.Find(id);
             if (urun != null)
             {
-                _context.Urunler.Remove(urun);
+                urun.AktifMi = false;
+                _context.Urunler.Update(urun);
                 _context.SaveChanges();
             }
         }
@@ -54,5 +53,6 @@ namespace HTYS.DataAccessLayer
                            .Distinct()
                            .Count();
         }
+
     }
 }

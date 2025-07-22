@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HTYS.Entities
@@ -65,5 +64,7 @@ namespace HTYS.Entities
 
         [ForeignKey("UrunId")]
         public virtual Urun? Urun { get; set; }
+
+        public bool AktifMi { get; set; } = true;
     }
 }

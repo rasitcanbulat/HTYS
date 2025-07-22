@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HTYS.Entities
@@ -15,6 +14,5 @@ namespace HTYS.Entities
         [ForeignKey("IlId")]
         public Il Il { get; set; }
 
-        public ICollection<Semt> Semtler { get; set; }
     }
 }

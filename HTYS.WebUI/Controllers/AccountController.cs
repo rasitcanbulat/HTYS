@@ -1,12 +1,10 @@
 using HTYS.BusinessLayer;
-using HTYS.Entities;
 using HTYS.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
-using System.Linq;
 
 namespace HTYS.WebUI.Controllers
 {

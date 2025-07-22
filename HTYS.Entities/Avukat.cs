@@ -82,6 +82,9 @@ namespace HTYS.Entities
         [Display(Name = "Hesap Aktif Mi?")]
         public bool HesapAktifMi { get; set; } = true;
 
+        [Display(Name = "Aktif Mi?")]
+        public bool AktifMi { get; set; } = true;
+
 
         [NotMapped]
         public decimal? AvansAsimLimiti { get; set; }

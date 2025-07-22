@@ -23,10 +23,5 @@ namespace HTYS.BusinessLayer
         {
             return await _adresIslem.GetIlcelerByIlIdAsync(ilId);
         }
-
-        public async Task<List<Semt>> GetSemtlerByIlceIdAsync(int ilceId)
-        {
-            return await _adresIslem.GetSemtlerByIlceIdAsync(ilceId);
-        }
     }
 }

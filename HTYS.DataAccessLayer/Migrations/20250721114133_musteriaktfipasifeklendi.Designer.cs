@@ -4,6 +4,7 @@ using HTYS.DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HTYS.DataAccessLayer.Migrations
 {
     [DbContext(typeof(HTYSDbContext))]
-    partial class HTYSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250721114133_musteriaktfipasifeklendi")]
+    partial class musteriaktfipasifeklendi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,9 +37,6 @@ namespace HTYS.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
-
-                    b.Property<bool>("AktifMi")
-                        .HasColumnType("bit");
 
                     b.Property<string>("AvukatTipi")
                         .IsRequired()
@@ -115,9 +115,6 @@ namespace HTYS.DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("AktifMi")
-                        .HasColumnType("bit");
-
                     b.Property<int>("AvukatId")
                         .HasColumnType("int");
 
@@ -172,9 +169,6 @@ namespace HTYS.DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("AktifMi")
-                        .HasColumnType("bit");
 
                     b.Property<string>("IhtarNo")
                         .IsRequired()
@@ -430,9 +424,6 @@ namespace HTYS.DataAccessLayer.Migrations
                     b.Property<string>("Aciklama")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("AktifMi")
-                        .HasColumnType("bit");
 
                     b.Property<int>("AvukatId")
                         .HasColumnType("int");

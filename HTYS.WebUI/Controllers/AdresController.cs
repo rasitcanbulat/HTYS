@@ -1,6 +1,5 @@
 ﻿using HTYS.BusinessLayer;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace HTYS.WebUI.Controllers
 {
@@ -25,13 +24,6 @@ namespace HTYS.WebUI.Controllers
         {
             var ilceler = await _adresYonetim.GetIlcelerByIlIdAsync(ilId);
             return Json(ilceler);
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> GetSemtler(int ilceId)
-        {
-            var semtler = await _adresYonetim.GetSemtlerByIlceIdAsync(ilceId);
-            return Json(semtler);
         }
     }
 }

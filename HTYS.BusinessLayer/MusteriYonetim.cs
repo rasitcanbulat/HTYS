@@ -40,5 +40,9 @@ namespace HTYS.BusinessLayer
         {
             return _musteriIslem.HepsiniGetirListe();
         }
+        public (int UrunSayisi, int IhtarSayisi, int IcraSayisi) BaglantiKontrolEt(int musteriId)
+        {
+            return _musteriIslem.MusteriBaglantiKontrol(musteriId);
+        }
     }
 }

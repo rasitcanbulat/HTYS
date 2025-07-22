@@ -40,12 +40,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        .nav-center {
-            justify-self: center;
-            display: flex;
-            gap: 15px;
-        }
-
         .user-info {
             justify-self: end;
             display: flex;
@@ -55,9 +49,19 @@
             font-weight: 600;
         }
 
-        .logout-container {
-            justify-self: end;
+        .icon-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s;
         }
+
+            .icon-button:hover {
+                opacity: 0.8;
+            }
 
         .panel-bar .center-text {
             color: white;
@@ -76,13 +80,19 @@
 
         .dashboard-grid {
             display: grid;
-            grid-template-rows: auto 1fr;
             grid-template-columns: repeat(3, 1fr);
             gap: 25px;
             align-items: center;
             justify-items: center;
             width: 100%;
             max-width: 900px;
+        }
+
+        .stat-box-link {
+            text-decoration: none;
+            color: inherit;
+            width: 100%;
+            display: block;
         }
 
         .stat-box {
@@ -100,77 +110,40 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-            .stat-box:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-            }
+        .stat-box-link:hover .stat-box {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+        }
 
-            .stat-box .title {
-                font-size: 1em;
-                margin-bottom: 10px;
-                opacity: 0.9;
-            }
+        .stat-box .title {
+            font-size: 1em;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
 
-            .stat-box .number {
-                font-size: 2.5em;
-                font-weight: 700;
-            }
+        .stat-box .number {
+            font-size: 2.5em;
+            font-weight: 700;
+        }
 
         .logo-container {
-            grid-column: 2 / 3;
+            grid-column: 1 / -1; /* Logonun tüm satırı kaplamasını sağlar */
             text-align: center;
-            margin-top: 25px;
+            margin-bottom: 25px; /* Kartlarla arasında boşluk bırakır */
         }
 
         .halkbank-logo-panel {
             width: 200px;
-        }
-
-        .panel-button {
-            background-color: white;
-            color: #005baa;
-            border: none;
-            padding: 10px 30px;
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            white-space: nowrap;
-            transition: background-color 0.2s, color 0.2s;
-        }
-
-            .panel-button:hover {
-                background-color: #e6f0fa;
-            }
-
-        .logout-button {
-            background-color: #f44336;
-            color: white;
-            padding: 8px 24px;
-        }
-
-            .logout-button:hover {
-                background-color: #d32f2f;
-            }
-
-        .icon-button {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5em;
-            cursor: pointer;
-            text-decoration: none;
         }
     </style>
 </head>
 <body>
     <div class="panel-container">
         <header class="panel-bar top-bar">
-            <div></div>
-            <div class="nav-center">
-                <a asp-controller="AvukatDosya" asp-action="Ihtarlarim" class="panel-button">İhtar Yönetimi</a>
-                <a asp-controller="AvukatDosya" asp-action="Iclarim" class="panel-button">İcra Yönetimi</a>
+            <div>
+            </div>
+            <div style="justify-self: center;">
+                <img src="~/img/halkbank-logo.png" alt="Halkbank Logo" style="height: 70px;" />
             </div>
             <div class="user-info">
                 @if (!string.IsNullOrEmpty(ViewBag.KullaniciAdi))
@@ -183,18 +156,24 @@
 
         <main class="panel-main">
             <div class="dashboard-grid">
-                <div class="stat-box">
-                    <div class="title">Tarafınıza Atanan Müşteri Sayısı</div>
-                    <div class="number">@Model.MusteriSayisi</div>
-                </div>
-                <div class="stat-box">
-                    <div class="title">Tarafınıza Atanan İcra Sayısı</div>
-                    <div class="number">@Model.IcraSayisi</div>
-                </div>
-                <div class="stat-box">
-                    <div class="title">Tarafınıza Atanan İhtar Sayısı</div>
-                    <div class="number">@Model.IhtarSayisi</div>
-                </div>
+                <a class="stat-box-link">
+                    <div class="stat-box">
+                        <div class="title">Tarafınıza Atanan Müşteri Sayısı</div>
+                        <div class="number">@Model.MusteriSayisi</div>
+                    </div>
+                </a>
+                <a asp-controller="AvukatDosya" asp-action="Iclarim" class="stat-box-link">
+                    <div class="stat-box">
+                        <div class="title">Tarafınıza Atanan İcra Sayısı</div>
+                        <div class="number">@Model.IcraSayisi</div>
+                    </div>
+                </a>
+                <a asp-controller="AvukatDosya" asp-action="Ihtarlarim" class="stat-box-link">
+                    <div class="stat-box">
+                        <div class="title">Tarafınıza Atanan İhtar Sayısı</div>
+                        <div class="number">@Model.IhtarSayisi</div>
+                    </div>
+                </a>
                 <div class="logo-container">
                     <img src="~/img/halkbank-logo.png" alt="Halkbank Logo" class="halkbank-logo-panel" />
                 </div>
@@ -204,9 +183,9 @@
         <footer class="panel-bar bottom-bar">
             <div></div>
             <span class="center-text">
-                <a href="https://linkedin.com/in/rasitcanbulat/" target="_blank" style="color: white; text-decoration: none;">Muhammed Raşit Canbulat tarafından geliştirilmiştir.</a></span>
-            <div class="logout-container">
-            </div>
+                <a href="https://www.linkedin.com/in/rasitcanbulat/" target="_blank" style="color: white; text-decoration: none;">Muhammed Raşit Canbulat tarafından geliştirilmiştir.</a>
+            </span>
+            <div></div>
         </footer>
     </div>
 </body>

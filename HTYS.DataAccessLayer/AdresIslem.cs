@@ -1,8 +1,6 @@
 ﻿using HTYS.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace HTYS.DataAccessLayer
 {
@@ -23,11 +21,6 @@ namespace HTYS.DataAccessLayer
         public async Task<List<Ilce>> GetIlcelerByIlIdAsync(int ilId)
         {
             return await _context.Ilceler.Where(i => i.IlId == ilId).OrderBy(i => i.Ad).ToListAsync();
-        }
-
-        public async Task<List<Semt>> GetSemtlerByIlceIdAsync(int ilceId)
-        {
-            return await _context.Semtler.Where(s => s.IlceId == ilceId).OrderBy(s => s.Ad).ToListAsync();
         }
     }
 }

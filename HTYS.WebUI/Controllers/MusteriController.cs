@@ -84,6 +84,6 @@ namespace HTYS.WebUI.Controllers
         {
             _musteriYonetim.Sil(id);
             return RedirectToAction("Index");
-        }
+        }   
     }
 }

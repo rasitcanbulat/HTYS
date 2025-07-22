@@ -230,9 +230,8 @@
                             <td>@avukat.Sehir / @avukat.Ilce</td>
                             <td>
                                 <a asp-action="Edit" asp-route-id="@avukat.Id" class="action-btn btn-update">Güncelle</a>
-                                <form asp-action="Delete" asp-route-id="@avukat.Id" method="post" onsubmit="return confirm('Bu avukatı silmek istediğinizden emin misiniz?');" style="display:inline;">
+                                <form asp-action="DeleteConfirmed" asp-route-id="@avukat.Id" method="post" onsubmit="return confirm('Bu avukatı silmek istediğinizden emin misiniz?');" style="display:inline;">
                                     @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@avukat.Id" />
                                     <button type="submit" class="action-btn btn-delete">Sil</button>
                                 </form>
                             </td>

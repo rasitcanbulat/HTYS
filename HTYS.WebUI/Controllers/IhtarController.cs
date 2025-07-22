@@ -3,7 +3,6 @@ using HTYS.Entities;
 using HTYS.WebUI.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Linq;
 
 namespace HTYS.WebUI.Controllers
 {
@@ -85,7 +84,7 @@ namespace HTYS.WebUI.Controllers
             return View(ihtar);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {

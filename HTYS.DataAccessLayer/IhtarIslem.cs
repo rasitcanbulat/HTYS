@@ -1,7 +1,5 @@
 ﻿using HTYS.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HTYS.DataAccessLayer
 {
@@ -12,7 +10,7 @@ namespace HTYS.DataAccessLayer
 
         public List<Ihtar> HepsiniGetir()
         {
-            return _context.Ihtarlar.Include(i => i.Borclu).Include(i => i.Urun).ToList();
+            return _context.Ihtarlar.Where(i => i.AktifMi).Include(i => i.Borclu).Include(i => i.Urun).ToList();
         }
         public Ihtar IdyeGoreGetir(int id)
         {
@@ -33,7 +31,8 @@ namespace HTYS.DataAccessLayer
             var ihtar = _context.Ihtarlar.Find(id);
             if (ihtar != null)
             {
-                _context.Ihtarlar.Remove(ihtar);
+                ihtar.AktifMi = false;
+                _context.Ihtarlar.Update(ihtar);
                 _context.SaveChanges();
             }
         }

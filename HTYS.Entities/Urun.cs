@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HTYS.Entities
@@ -59,11 +58,12 @@ namespace HTYS.Entities
         [Display(Name = "Açıklama")]
         public string? Aciklama { get; set; }
 
-        // Navigation Properties
         [ForeignKey("MusteriId")]
         public virtual Musteri Borclu { get; set; }
 
         [ForeignKey("AvukatId")]
         public virtual Avukat Avukat { get; set; }
+
+        public bool AktifMi { get; set; } = true;
     }
 }

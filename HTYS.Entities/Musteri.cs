@@ -96,5 +96,8 @@ namespace HTYS.Entities
         public bool HayattaMi { get; set; } = true;
 
         public DateTime OlusturmaTarihi { get; set; } = DateTime.Now;
+
+        [Display(Name = "Aktif Mi?")]
+        public bool AktifMi { get; set; } = true;
     }
 }
