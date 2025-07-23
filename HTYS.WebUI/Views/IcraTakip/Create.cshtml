@@ -324,9 +324,12 @@
         function icraMuduruguDogrula() {
             const input = document.getElementById('icraMuduruguInput');
             const error = document.getElementById('icraMuduruguError');
+            const harfRegex = /^[0-9a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
             let message = '';
             if (!input.value) {
                 message = 'İcra müdürlüğü zorunludur.';
+            } else if (!harfRegex.input(value)) {
+                message = 'İcra müdürlüğü alanına özel karakter giremezsiniz.';
             } else if (input.value.length > 50) {
                 message = 'İcra müdürlüğü en fazla 50 karakter olabilir.';
             }

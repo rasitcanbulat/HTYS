@@ -329,6 +329,43 @@
             });
         });
 
+        function formuDogrulaVeGonder(event) {
+            adDogrulama();
+            soyadDogrulama();
+            tcknDogrulama();
+            kullaniciAdiDogrula();
+            vergiDairesiDogrula();
+            vergiNoDogrulama();
+            telefonDogrulama('cepTelefonuInput', 'cepTelefonuError');
+            telefonDogrulama('isTelefonuInput', 'isTelefonuError');
+            telefonDogrulama('faksNoInput', 'faksNoError');
+            emailDogrulama();
+            ibanDogrulama('ibanInput', 'ibanError');
+            semtDogrulama();
+            avukatTipiDogrulama();
+
+            const form = event.target;
+            const errorSpans = form.querySelectorAll('.text-danger');
+            let formGecerli = true;
+            errorSpans.forEach(span => {
+                if (span.textContent.trim() !== '') {
+                    formGecerli = false;
+                }
+            });
+
+            if (!formGecerli) {
+                event.preventDefault();
+                alert('Lütfen formdaki kırmızı ile belirtilen zorunlu veya hatalı alanları düzeltin.');
+                return false;
+            } else {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.display = 'flex';
+                const submitButton = form.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                return true;
+            }
+        }
+
         // DOĞRULAMA
 
         function adDogrula() {
@@ -364,6 +401,17 @@
             }
             soyadError.textContent = hataMesaji;
         }
+        function kullaniciAdiDogrula() {
+            const input = document.getElementById('kullaniciAdiInput');
+            const error = document.getElementById('kullaniciAdiError');
+            let message = '';
+            if (!input.value) {
+                message = 'Kullanıcı adı zorunludur.';
+            } else if (input.value.length > 15) {
+                message = 'Kullanıcı adı en fazla 15 karakter olabilir.';
+            }
+            error.textContent = message;
+        }
 
         function tcknDogrula() {
             const tcknInput = document.getElementById('tcknInput');
@@ -381,28 +429,20 @@
             tcknError.textContent = hataMesaji;
         }
 
-        function kullaniciAdiDogrula() {
-            const input = document.getElementById('kullaniciAdiInput');
-            const error = document.getElementById('kullaniciAdiError');
-            const value = input.value;
-
-            let hataMesaji = '';
-            if (!value) {
-                hataMesaji = 'Kullanıcı adı zorunludur.';
-            } else if (value.length > 15) {
-                hataMesaji = 'Kullanıcı adı en fazla 15 karakter olabilir.';
-            }
-            error.textContent = hataMesaji;
-        }
-
         function vergiDairesiDogrula() {
             const input = document.getElementById('vergiDairesiInput');
             const error = document.getElementById('vergiDairesiError');
-            if (input.value && input.value.length > 30) {
-                error.textContent = 'Vergi Dairesi en fazla 30 karakter olabilir.';
-            } else {
-                error.textContent = '';
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
+
+            let message = '';
+            if (!input.value) {
+                message = 'Vergi dairesi zorunludur.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Vergi dairesi alanına özel karakter veya rakam giremezsiniz.';
+            } else if (input.value && input.value.length > 30) {
+                message = 'Vergi Dairesi en fazla 30 karakter olabilir.';
             }
+            error.textContent = message;
         }
 
         function vergiNoDogrula() {
@@ -411,7 +451,7 @@
             const value = input.value;
 
             let hataMesaji = '';
-            if (value) { // Sadece doluysa kontrol et
+            if (value) {
                 if (!/^[0-9]+$/.test(value)) {
                     hataMesaji = 'Vergi No sadece rakamlardan oluşmalıdır.';
                 } else if (value.length > 8) {
@@ -422,14 +462,17 @@
         }
 
         function telefonDogrula(inputId, errorId) {
+            debugger;
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
             const value = input.value;
             const telefonRegex = /^[0-9\s()+-]*$/;
 
             let hataMesaji = '';
-            if (value && !telefonRegex.test(value)) {
+            if (!telefonRegex.test(value)) {
                 hataMesaji = 'Geçersiz telefon numarası formatı.';
+            } else if (value.length !== 10) {
+                hataMesaji = 'Telefon numarası 10 hane olmak zorundadır.'
             }
             error.textContent = hataMesaji;
         }
@@ -468,13 +511,20 @@
         }
 
         function semtDogrula() {
+            debugger;
             const input = document.getElementById('semtInput');
             const error = document.getElementById('semtError');
-            if (input.value && input.value.length > 50) {
-                error.textContent = 'Semt / Mahalle en fazla 50 karakter olabilir.';
-            } else {
-                error.textContent = '';
+            const harfRegex = /^[0-9a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
+
+            let message = '';
+            if (!input.value) {
+                message = 'Semt / Mahalle alanı zorunludur.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Semt / Mahalle alanına özel karakter giremezsiniz.';
+            } else if (input.value && input.value.length > 50) {
+                message = 'Semt / Mahalle en fazla 50 karakter olabilir.';
             }
+            error.textContent = message;
         }
 
         function avukatTipiDogrula() {

@@ -474,28 +474,35 @@
                 error.textContent = message;
         }
 
-        function telefonDogrulama(inputId, errorId) {
+        function telefonDogrula(inputId, errorId) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            if (input.value && !/^[0-9\s()+-]*$/.test(input.value)) {
-                error.textContent = 'Geçersiz telefon numarası formatı.';
-            } else {
-                error.textContent = '';
+            const value = input.value;
+            const telefonRegex = /^[0-9\s()+-]*$/;
+
+            let hataMesaji = '';
+            if (value && !telefonRegex.test(value)) {
+                hataMesaji = 'Geçersiz telefon numarası formatı.';
             }
+            error.textContent = hataMesaji;
         }
 
-        function ibanDogrulama(inputId, errorId) {
+        function ibanDogrula(inputId, errorId) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            const ibanRegex = new RegExp("^TR[0-9]{24}$");
-            let message = '';
-            if (input.value) {
-                const temizlenmisIban = input.value.toUpperCase().replace(/\s/g, '');
-                if (!ibanRegex.test(temizlenmisIban)) {
-                    message = "IBAN, 'TR' ile başlamalı ve 26 karakter olmalıdır.";
+            const value = input.value.toUpperCase().replace(/\s/g, '');
+
+            let hataMesaji = '';
+            if (value) {
+                if (!value.startsWith('TR')) {
+                    hataMesaji = "IBAN 'TR' ile başlamalıdır.";
+                } else if (value.length !== 26) {
+                    hataMesaji = 'IBAN 26 karakter olmalıdır.';
+                } else if (!/^[0-9]+$/.test(value.substring(2))) {
+                    hataMesaji = "IBAN'ın ilk 2 karakterinden sonrası sadece rakam olmalıdır.";
                 }
             }
-            error.textContent = message;
+            error.textContent = hataMesaji;
         }
 
         function semtDogrulama() {
