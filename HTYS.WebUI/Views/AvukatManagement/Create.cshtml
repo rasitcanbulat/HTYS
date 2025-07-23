@@ -461,11 +461,17 @@
         function vergiDairesiDogrulama() {
             const input = document.getElementById('vergiDairesiInput');
             const error = document.getElementById('vergiDairesiError');
-            if (input.value && input.value.length > 30) {
-                error.textContent = 'Vergi Dairesi en fazla 30 karakter olabilir.';
-            } else {
-                error.textContent = '';
-            }
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
+            
+            let message = '';
+            if (!input.value) {
+                message = 'Vergi dairesi zorunludur.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Vergi dairesi alanına özel karakter veya rakam giremezsiniz.';
+            } else if (input.value && input.value.length > 30) {
+                message = 'Vergi Dairesi en fazla 30 karakter olabilir.';
+            } 
+                error.textContent = message;
         }
 
         function telefonDogrulama(inputId, errorId) {
@@ -495,11 +501,17 @@
         function semtDogrulama() {
             const input = document.getElementById('semtInput');
             const error = document.getElementById('semtError');
-            if (input.value && input.value.length > 50) {
-                error.textContent = 'Semt / Mahalle en fazla 50 karakter olabilir.';
-            } else {
-                error.textContent = '';
+            const harfRegex = /^[0-9a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
+
+            let message = '';
+            if (!input.value) {
+                message = 'Semt / Mahalle alanı zorunludur.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Semt / Mahalle alanına özel karakter giremezsiniz.';
+            } else if (input.value && input.value.length > 50) {
+                message = 'Semt / Mahalle en fazla 50 karakter olabilir.';
             }
+                error.textContent = message;
         }
 
         function avukatTipiDogrulama() {

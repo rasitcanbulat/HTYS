@@ -247,8 +247,8 @@
 
                 <div class="form-column">
                     <h3>NÜFUS & KİMLİK BİLGİLERİ</h3>
-                    <div class="form-group"><label asp-for="BabaAdi"></label><input asp-for="BabaAdi" /></div>
-                    <div class="form-group"><label asp-for="AnneAdi"></label><input asp-for="AnneAdi" /></div>
+                    <div class="form-group"><label asp-for="BabaAdi"></label><input asp-for="BabaAdi" id="babaAdInput" oninput="babaAdDogrula()" /><span id="babaAdError" class="text-danger"></span></div>
+                    <div class="form-group"><label asp-for="AnneAdi"></label><input asp-for="AnneAdi" id="anneAdInput" oninput="anneAdDogrula()" /><span id="anneAdError" class="text-danger"></span></div>
                     <div class="form-group"><label asp-for="PasaportNo"></label><input asp-for="PasaportNo" id="pasaportNoInput" oninput="pasaportNoDogrula()" /><span id="pasaportNoError" class="text-danger"></span></div>
                     <div class="form-group"><label asp-for="NufusaKayitliIl"></label><input asp-for="NufusaKayitliIl" id="nufusIlInput" oninput="nufusIlDogrula()" /><span id="nufusIlError" class="text-danger"></span></div>
                     <div class="form-group"><label asp-for="CiltNo"></label><input asp-for="CiltNo" id="ciltNoInput" oninput="ciltNoDogrula()" /><span id="ciltNoError" class="text-danger"></span></div>
@@ -332,6 +332,47 @@
             });
         });
 
+        function formuDogrulaVeGonder(event) {
+            musteriNoDogrula();
+            adDogrula();
+            soyadDogrula();
+            anneAdDogrula();
+            babaAdDogrula();
+            tcknDogrula();
+            dogumYeriDogrula();
+            cinsiyetDogrula();
+            medeniDurumDogrula();
+            pasaportNoDogrula();
+            nufusIlDogrula();
+            ciltNoDogrula();
+            aileSiraNoDogrula();
+            kutukSiraNoDogrula();
+            semtDogrula();
+            vergiDairesiDogrula();
+            vergiNoDogrula();
+
+            const form = event.target;
+            const errorSpans = form.querySelectorAll('.text-danger');
+            let formGecerli = true;
+            errorSpans.forEach(span => {
+                if (span.textContent.trim() !== '') {
+                    formGecerli = false;
+                }
+            });
+
+            if (!formGecerli) {
+                event.preventDefault();
+                alert('Lütfen formdaki kırmızı ile belirtilen zorunlu veya hatalı alanları düzeltin.');
+                return false;
+            } else {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.display = 'flex';
+                const submitButton = form.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                return true;
+            }
+        }
+
         // DOĞRULAMA
 
         function musteriNoDogrula() {
@@ -361,6 +402,38 @@
                 hataMesaji = 'Ad sadece harflerden oluşmalıdır.';
             }
             error.textContent = hataMesaji;
+        }
+
+        function babaAdDogrula() {
+            const input = document.getElementById('babaAdInput')
+            const error = document.getElementById('babaAdError')
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
+
+            let message = '';
+            if (!input.value) {
+                message = 'Baba adı zorunludur.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Baba adı özel karakter veya rakam giremezsiniz.';
+            } else if (input.value.length > 30) {
+                message = 'Baba adı en fazla 30 karakter olabilir.';
+            }
+            error.textContent = message;
+        }
+
+        function anneAdDogrula() {
+            const input = document.getElementById('anneAdInput')
+            const error = document.getElementById('anneAdError')
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
+
+            let message = '';
+            if (!input.value) {
+                message = 'Anne adı zorunludur.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Anne adı özel karakter veya rakam giremezsiniz.';
+            } else if (input.value.length > 30) {
+                message = 'Anne adı en fazla 30 karakter olabilir.';
+            }
+            error.textContent = message;
         }
 
         function soyadDogrula() {
@@ -398,11 +471,15 @@
         function dogumYeriDogrula() {
             const input = document.getElementById('dogumYeriInput');
             const error = document.getElementById('dogumYeriError');
-            if (input.value && input.value.length > 30) {
-                error.textContent = 'Doğum Yeri en fazla 30 karakter olabilir.';
-            } else {
-                error.textContent = '';
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
+
+            let message = '';
+            if (!input.value) {
+                message = 'Doğum yeri zorunludur.'
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Doğum yerine özel karakter veya rakam giremezsiniz.';
             }
+            error.textContent = message;
         }
 
         function cinsiyetDogrula() {
@@ -426,21 +503,33 @@
         function pasaportNoDogrula() {
             const input = document.getElementById('pasaportNoInput');
             const error = document.getElementById('pasaportNoError');
-            if (input.value && input.value.length > 8) {
-                error.textContent = 'Pasaport No en fazla 8 karakter olabilir.';
-            } else {
-                error.textContent = '';
+            const num = /^[0-9]+$/;
+
+            let message = '';
+            if (!input.value) {
+                message = 'Pasaport numarası zorunludur.'
+            } else if (input.value && input.value.length > 8) {
+                message = 'Pasaport No en fazla 8 karakter olabilir.';
+            } else if (!num.test(input.value)) {
+                message = 'Pasaport numarasına özel karakter veya harf giremezsiniz.';
             }
+            error.textContent = message;
         }
 
         function nufusIlDogrula() {
             const input = document.getElementById('nufusIlInput');
             const error = document.getElementById('nufusIlError');
-            if (input.value && input.value.length > 30) {
-                error.textContent = 'Nüfusa Kayıtlı İl en fazla 30 karakter olabilir.';
-            } else {
-                error.textContent = '';
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ ]+$/;
+
+            let message = '';
+            if (!input.value) {
+                message = 'Nüfusa kayıtlı il zorunludur.'
+            } else if (input.value && input.value.length > 30) {
+                message = 'Nüfusa kayıtlı il en fazla 30 karakter olabilir.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Nüfusa kayıtlı il özel karakter veya rakam içeremez.';
             }
+            error.textContent = message;
         }
 
         function ciltNoDogrula() {
@@ -491,31 +580,47 @@
         function semtDogrula() {
             const input = document.getElementById('semtInput');
             const error = document.getElementById('semtError');
-            if (input.value && input.value.length > 50) {
-                error.textContent = 'Semt / Mahalle en fazla 50 karakter olabilir.';
-            } else {
-                error.textContent = '';
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ]+$/;
+
+            let message = '';
+            if (!input.value) {
+                message = 'Semt / Mahalle zorunludur.'
+            } else if (input.value && input.value.length > 50) {
+                message = 'Semt / Mahalle en fazla 50 karakter olabilir.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Semt / Mahalle özel karakter veya rakam içeremez.';
             }
+            error.textContent = message;
         }
 
         function vergiDairesiDogrula() {
             const input = document.getElementById('vergiDairesiInput');
             const error = document.getElementById('vergiDairesiError');
-            if (input.value && input.value.length > 30) {
-                error.textContent = 'Vergi Dairesi en fazla 30 karakter olabilir.';
-            } else {
-                error.textContent = '';
+            const harfRegex = /^[a-zA-ZçÇğĞıİöÖşŞüÜ]+$/;
+
+            let message = '';
+            if (!input.value) {
+                message = 'Vergi Dairesi zorunludur.'
+            } else if (input.value && input.value.length > 30) {
+                message = 'Vergi Dairesi en fazla 30 karakter olabilir.';
+            } else if (!harfRegex.test(input.value)) {
+                message = 'Vergi Dairesi özel karakter veya rakam içeremez.';
             }
+            error.textContent = message;
         }
 
         function vergiNoDogrula() {
             const input = document.getElementById('vergiNoInput');
             const error = document.getElementById('vergiNoError');
-            if (input.value && input.value.length > 8) {
-                error.textContent = 'Vergi No en fazla 8 karakter olabilir.';
-            } else {
-                error.textContent = '';
+            let message = '';
+            if (input.value) {
+                if (!/^[0-9]+$/.test(input.value)) {
+                    message = 'Vergi Numarası sadece rakamlardan oluşmalıdır.';
+                } else if (input.value.length > 8) {
+                    message = 'Vergi No en fazla 8 karakter olabilir.';
+                }
             }
+            error.textContent = message;
         }
     </script>
 </body>
